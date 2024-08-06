@@ -3,15 +3,17 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from "next/link";
+import SearchIcon from "@/icons/SearchIcon";
+import UserIcon from "@/icons/UserIcon";
+import CartIcon from "@/icons/CartIcon";
 
 export default function MainHeader() {
   return (
     <header className="border-b-1 border-l-neutral-700 h-4.5">
-      <div className="container flex items-center h-full">
+      <div className="container flex items-center h-full justify-between">
         <div className="flex items-center gap-10">
           <Image
             src="/images/logo.webp"
@@ -21,27 +23,40 @@ export default function MainHeader() {
             quality={70}
           />
           <div className="flex gap-8">
-            <DropdownMenu open={false}>
-              <DropdownMenuTrigger className="outline-none">
-                Thương Hiệu
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>Adidas</DropdownMenuItem>
-                <DropdownMenuItem>Nike</DropdownMenuItem>
-                <DropdownMenuItem>MLB</DropdownMenuItem>
-                <DropdownMenuItem>New Balance</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Link href={"/adidas"}>Adidas</Link>
+            <Link href={"/adidas"}>Nike</Link>
+            <Link href={"/adidas"}>New Balance</Link>
+            <Link href={"/adidas"}>MLB</Link>
             <DropdownMenu>
               <DropdownMenuTrigger className="outline-none">
                 Danh mục
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem>Giày thể thao</DropdownMenuItem>
-                <DropdownMenuItem>Giày thời trang</DropdownMenuItem>
-                <DropdownMenuItem>Giày chạy bộ</DropdownMenuItem>
+                <DropdownMenuItem className="p-4">
+                  Giày thể thao
+                </DropdownMenuItem>
+                <DropdownMenuItem className="p-4">
+                  Giày thời trang
+                </DropdownMenuItem>
+                <DropdownMenuItem className="p-4">
+                  Giày chạy bộ
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+          </div>
+        </div>
+        <div className="flex items-center gap-4">
+          <div>
+            <SearchIcon />
+          </div>
+          <div>
+            <UserIcon />
+          </div>
+          <div className="relative">
+            <CartIcon />
+            <span className="absolute text-xs top-0 -right-1 bg-black text-white px-1 text-center rounded-full">
+              3
+            </span>
           </div>
         </div>
       </div>

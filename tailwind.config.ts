@@ -24,6 +24,9 @@ const config = {
       borderWidth: {
         "1": "1px",
       },
+      padding: {
+        "0.5": "3px",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
