@@ -12,7 +12,7 @@ import CartIcon from "@/icons/CartIcon";
 
 export default function MainHeader() {
   return (
-    <header className="border-b-1 border-l-neutral-700 h-4.5">
+    <header className="border-b-1 h-4.5">
       <div className="container flex items-center h-full justify-between">
         <div className="flex items-center gap-10">
           <Link href={"/"}>
@@ -59,9 +59,19 @@ export default function MainHeader() {
           <div>
             <SearchIcon />
           </div>
-          <Link href={"/auth"}>
-            <UserIcon />
-          </Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="outline-none font-medium">
+              <UserIcon />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem className="p-4 font-medium">
+                Thông tin cá nhân
+              </DropdownMenuItem>
+              <DropdownMenuItem className="p-4 font-medium">
+                Đăng xuất
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <div className="relative">
             <CartIcon />
             <span className="absolute text-xs top-0 -right-1 bg-black text-white px-1 text-center rounded-full">
