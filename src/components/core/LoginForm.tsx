@@ -77,7 +77,10 @@ export default function LoginForm({ onSwitchTab }: LoginFormProps) {
             </FormItem>
           )}
         />
-        <Link href={"/"} className="text-sm font-medium underline mt-2">
+        <Link
+          href={"/forgotpass"}
+          className="text-sm font-medium underline mt-2"
+        >
           Bạn quên mật khẩu?
         </Link>
         <Button type="submit" className="block w-full">

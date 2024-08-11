@@ -9,7 +9,6 @@ export default function Auth() {
   const [currentTab, setCurrentTab] = useState("login");
 
   const handleTabChange = (value: string) => {
-    console.log("123");
     setCurrentTab(value);
   };
 
