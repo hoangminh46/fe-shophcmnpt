@@ -16,36 +16,42 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 
-const loginSchema = z.object({
+const registerSchema = z.object({
   email: z
     .string()
     .min(1, "Email còn trống, vui lòng nhập đầy đủ")
     .email("Email không đúng định dạng, vui lòng nhập lại"),
-  password: z.string().min(1, "Mật khẩu còn trống, vui lòng nhập đầy đủ"),
+  fullName: z.string().min(1, "Họ tên còn trống, vui lòng nhập đầy đủ"),
+  password: z.string().min(6, "Mật khẩu phải trên 6 ký tự"),
 });
 
-type LoginFormData = z.infer<typeof loginSchema>;
+type RegisterFormData = z.infer<typeof registerSchema>;
 
-interface LoginFormProps {
+interface RegisterFormProps {
   onSwitchTab: () => void;
 }
 
-export default function LoginForm({ onSwitchTab }: LoginFormProps) {
-  const form = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+export default function RegisterForm({ onSwitchTab }: RegisterFormProps) {
+  const form = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
     mode: "onBlur",
     defaultValues: {
       email: "",
       password: "",
+      fullName: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
+  function onSubmit(values: z.infer<typeof registerSchema>) {
     console.log(values);
   }
 
   return (
     <Form {...form}>
+      <p className="text-sm mb-4">
+        Trở thành thành viên Authentic Shoes để nhận ưu đãi độc quyền và thanh
+        toán nhanh hơn
+      </p>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
@@ -66,6 +72,19 @@ export default function LoginForm({ onSwitchTab }: LoginFormProps) {
         />
         <FormField
           control={form.control}
+          name="fullName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Họ và tên</FormLabel>
+              <FormControl>
+                <Input placeholder="Nguyễn Văn A" {...field} type="text" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="password"
           render={({ field }) => (
             <FormItem>
@@ -77,19 +96,16 @@ export default function LoginForm({ onSwitchTab }: LoginFormProps) {
             </FormItem>
           )}
         />
-        <Link href={"/"} className="text-sm font-medium underline mt-2">
-          Bạn quên mật khẩu?
-        </Link>
         <Button type="submit" className="block w-full">
-          Đăng nhập
+          Đăng ký
         </Button>
         <div className="w-full text-sm text-center border-t p-4 font-medium">
-          Bạn chưa có tài khoản?
+          Bạn đã có tài khoản?
           <span
             onClick={onSwitchTab}
             className="ml-1 underline cursor-pointer font-semibold"
           >
-            Đăng ký ngay
+            Đăng nhập ngay
           </span>
         </div>
       </form>

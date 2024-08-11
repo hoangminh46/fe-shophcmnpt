@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="border-t py-10 fixed bottom-0 left-0 right-0">
+    <footer className="border-t py-10 bottom-0 left-0 right-0">
       <div className="container flex">
         <div className="w-1/4">
           <p className="py-4 text-sm font-semibold inline-block">Mua sắm</p>
