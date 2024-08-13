@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 import StoreProvider from "@/app/StoreProvider";
+import { Toaster } from "@/components/ui/sonner"
 
 const montFont = Montserrat({ subsets: ["vietnamese"] });
 
@@ -21,6 +22,7 @@ export default function RootLayout({
         <StoreProvider>
           <div className="app">{children}</div>
         </StoreProvider>
+        <Toaster position="top-right"/>
       </body>
     </html>
   );

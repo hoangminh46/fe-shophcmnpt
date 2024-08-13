@@ -1,19 +1,20 @@
 import { login } from "@/services/authService";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { toast } from "sonner"
 
 interface AuthState {
-  user: any | null;
+  userToken: any | null;
   isAuthenticated: boolean;
   loading: boolean;
-  error: string | null;
+  message: string | null;
 }
 
 const initialState: AuthState = {
-  user: null,
+  userToken: null,
   isAuthenticated: false,
   loading: false,
-  error: null,
+  message: null,
 };
 
 export const loginUser = createAsyncThunk(
@@ -26,7 +27,7 @@ export const loginUser = createAsyncThunk(
       const data = await login(email, password);
       return data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Login failed");
+      return rejectWithValue(error.response?.data?.message || "Đăng nhập thất bại");
     }
   }
 );
@@ -36,7 +37,7 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     logout: (state) => {
-      state.user = null;
+      state.userToken = null;
       state.isAuthenticated = false;
     },
   },
@@ -44,16 +45,19 @@ export const authSlice = createSlice({
     builder
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
-        state.error = null;
+        state.message = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.isAuthenticated = true;
-        state.user = action.payload.user;
+        state.userToken = action.payload.token;
+        state.message = action.payload.message;
+        toast.success(state.message)
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string;
+        state.message = action.payload as string;
+        toast.error(state.message)
       });
   },
 });

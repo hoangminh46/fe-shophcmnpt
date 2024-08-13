@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useAppSelector, useAppDispatch, useAppStore } from "@/lib/hooks";
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button";
 import {
@@ -35,6 +36,7 @@ interface LoginFormProps {
 export default function LoginForm({ onSwitchTab }: LoginFormProps) {
   const store = useAppStore();
   const user = useAppSelector((state) => state.auth.user);
+  const message = useAppSelector((state) => state.auth.error);
   const dispatch = useAppDispatch();
 
   const form = useForm<LoginFormData>({
@@ -47,9 +49,7 @@ export default function LoginForm({ onSwitchTab }: LoginFormProps) {
   });
 
   function onSubmit(values: z.infer<typeof loginSchema>) {
-    dispatch(loginUser(values));
-    console.log(values);
-    console.log(user);
+    dispatch(loginUser(values))
   }
 
   return (
