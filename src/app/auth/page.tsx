@@ -1,5 +1,5 @@
 "use client";
-import MainLayout from "@/app/layouts/MainLayout";
+import AuthLayout from "@/app/layouts/AuthLayout";
 import LoginForm from "@/components/core/LoginForm";
 import RegisterForm from "@/components/core/RegisterForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,7 +13,7 @@ export default function Auth() {
   };
 
   return (
-    <MainLayout>
+    <AuthLayout>
       <div className="py-10">
         <Tabs
           defaultValue={currentTab}
@@ -48,6 +48,6 @@ export default function Auth() {
           </TabsContent>
         </Tabs>
       </div>
-    </MainLayout>
+    </AuthLayout>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
+import StoreProvider from "@/app/StoreProvider";
 
 const montFont = Montserrat({ subsets: ["vietnamese"] });
 
@@ -17,7 +18,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={montFont.className}>
-        <div className="app">{children}</div>
+        <StoreProvider>
+          <div className="app">{children}</div>
+        </StoreProvider>
       </body>
     </html>
   );

@@ -2,6 +2,8 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
 } from "@/components/ui/carousel";
 import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
@@ -22,8 +24,8 @@ export default function HomeBanner() {
       <CarouselContent>
         <CarouselItem>
           <Image
-            className="w-full h-[777px]"
-            src="/images/banner/banner2.jpg"
+            className="w-full h-[777px] object-cover"
+            src="/images/banner/bn1.webp"
             alt="Logo"
             width={2000}
             height={2000}
@@ -32,7 +34,7 @@ export default function HomeBanner() {
         </CarouselItem>
         <CarouselItem>
           <Image
-            className="w-full h-[777px]"
+            className="w-full h-[777px] object-cover"
             src="/images/banner/banner4.jpg"
             alt="Logo"
             width={2000}
@@ -42,7 +44,7 @@ export default function HomeBanner() {
         </CarouselItem>
         <CarouselItem>
           <Image
-            className="w-full h-[777px]"
+            className="w-full h-[777px] object-cover"
             src="/images/banner/banner3.webp"
             alt="Logo"
             width={2000}
@@ -51,6 +53,8 @@ export default function HomeBanner() {
           />
         </CarouselItem>
       </CarouselContent>
+      <CarouselPrevious className="left-12 w-12 h-12 bg-gray-200 bg-opacity-20 border-none text-white" />
+      <CarouselNext className="right-12 w-12 h-12 bg-gray-200 bg-opacity-20 border-none text-white" />
     </Carousel>
   );
 }
