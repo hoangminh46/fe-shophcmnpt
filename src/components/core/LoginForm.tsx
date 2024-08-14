@@ -3,8 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useAppSelector, useAppDispatch, useAppStore } from "@/lib/hooks";
-import { toast } from "sonner"
+import { useAppDispatch } from "@/lib/hooks";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -34,9 +34,7 @@ interface LoginFormProps {
 }
 
 export default function LoginForm({ onSwitchTab }: LoginFormProps) {
-  const store = useAppStore();
-  const user = useAppSelector((state) => state.auth.user);
-  const message = useAppSelector((state) => state.auth.error);
+  const router = useRouter();
   const dispatch = useAppDispatch();
 
   const form = useForm<LoginFormData>({
@@ -48,8 +46,13 @@ export default function LoginForm({ onSwitchTab }: LoginFormProps) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    dispatch(loginUser(values))
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    const resultAction = await dispatch(loginUser(values));
+    if (loginUser.fulfilled.match(resultAction)) {
+      const { token } = resultAction.payload;
+      localStorage.setItem("token", token);
+      router.push("/");
+    }
   }
 
   return (

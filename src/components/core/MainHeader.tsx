@@ -9,8 +9,20 @@ import Link from "next/link";
 import SearchIcon from "@/icons/SearchIcon";
 import UserIcon from "@/icons/UserIcon";
 import CartIcon from "@/icons/CartIcon";
+import { useAppDispatch } from "@/lib/hooks";
+import { logout } from "@/lib/features/authSlice";
+import { useRouter } from "next/navigation";
 
 export default function MainHeader() {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    dispatch(logout());
+    router.push("/auth");
+  }
+
   return (
     <header className="border-b-1 h-4.5">
       <div className="container flex items-center h-full justify-between">
@@ -67,7 +79,10 @@ export default function MainHeader() {
               <DropdownMenuItem className="p-4 font-medium">
                 Thông tin cá nhân
               </DropdownMenuItem>
-              <DropdownMenuItem className="p-4 font-medium">
+              <DropdownMenuItem
+                className="p-4 font-medium"
+                onClick={handleLogout}
+              >
                 Đăng xuất
               </DropdownMenuItem>
             </DropdownMenuContent>
