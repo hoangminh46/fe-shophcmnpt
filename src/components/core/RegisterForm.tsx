@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { v4 as uuidv4 } from "uuid";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +15,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
+import { useAppDispatch } from "@/lib/hooks";
+import { registerUser } from "@/lib/features/authSlice";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const registerSchema = z.object({
   email: z
@@ -32,6 +36,8 @@ interface RegisterFormProps {
 }
 
 export default function RegisterForm({ onSwitchTab }: RegisterFormProps) {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     mode: "onBlur",
@@ -42,8 +48,21 @@ export default function RegisterForm({ onSwitchTab }: RegisterFormProps) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof registerSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof registerSchema>) {
+    const resultAction = await dispatch(
+      registerUser({
+        id: uuidv4(),
+        ...values,
+      })
+    );
+    if (registerUser.fulfilled.match(resultAction)) {
+      const { message } = resultAction.payload;
+      toast.success(message);
+      router.push("/profile");
+    } else if (registerUser.rejected.match(resultAction)) {
+      const message: any = resultAction.payload;
+      toast.error(message);
+    }
   }
 
   return (

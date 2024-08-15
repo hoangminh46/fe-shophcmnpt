@@ -1,7 +1,5 @@
-import { login } from "@/services/authService";
+import { login, register, resetPass } from "@/services/authService";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { toast } from "sonner"
 
 interface AuthState {
   userToken: any | null;
@@ -27,7 +25,45 @@ export const loginUser = createAsyncThunk(
       const data = await login(email, password);
       return data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Đăng nhập thất bại");
+      return rejectWithValue(
+        error.response?.data?.message || "Đăng nhập thất bại"
+      );
+    }
+  }
+);
+
+export const registerUser = createAsyncThunk(
+  "auth/register",
+  async (
+    {
+      id,
+      email,
+      password,
+      fullName,
+    }: { id: string; email: string; password: string; fullName: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const data = await register(id, email, password, fullName);
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Đăng ký thất bại"
+      );
+    }
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  "auth/reset",
+  async ({ email }: { email: string }, { rejectWithValue }) => {
+    try {
+      const data = await resetPass(email);
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Thao tác thất bại"
+      );
     }
   }
 );
@@ -52,12 +88,34 @@ export const authSlice = createSlice({
         state.isAuthenticated = true;
         state.userToken = action.payload.token;
         state.message = action.payload.message;
-        toast.success(state.message)
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.message = action.payload as string;
-        toast.error(state.message)
+      })
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.message = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.message = action.payload as string;
+      })
+      .addCase(resetPassword.pending, (state) => {
+        state.loading = true;
+        state.message = null;
+      })
+      .addCase(resetPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.message = action.payload as string;
       });
   },
 });

@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { loginUser } from "@/lib/features/authSlice";
+import { toast } from "sonner";
 
 const loginSchema = z.object({
   email: z
@@ -49,9 +50,13 @@ export default function LoginForm({ onSwitchTab }: LoginFormProps) {
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     const resultAction = await dispatch(loginUser(values));
     if (loginUser.fulfilled.match(resultAction)) {
-      const { token } = resultAction.payload;
+      const { token, message } = resultAction.payload;
       localStorage.setItem("token", token);
+      toast.success(message);
       router.push("/");
+    } else if (loginUser.rejected.match(resultAction)) {
+      const message: any = resultAction.payload;
+      toast.error(message);
     }
   }
 
