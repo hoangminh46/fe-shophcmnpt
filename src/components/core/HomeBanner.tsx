@@ -35,7 +35,7 @@ export default function HomeBanner() {
         <CarouselItem>
           <Image
             className="w-full h-[777px] object-cover"
-            src="/images/banner/banner4.jpg"
+            src="/images/banner/banner2.webp"
             alt="Logo"
             width={2000}
             height={2000}

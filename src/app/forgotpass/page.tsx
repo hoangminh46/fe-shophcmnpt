@@ -15,6 +15,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { resetPassword } from "@/lib/features/authSlice";
+import { toast } from "sonner";
+import LoadingIcon from "@/icons/LoadingIcon";
 
 const forgotSchema = z.object({
   email: z
@@ -26,6 +30,8 @@ const forgotSchema = z.object({
 type ForgotFormData = z.infer<typeof forgotSchema>;
 
 export default function ForgotPass() {
+  const dispatch = useAppDispatch();
+  const loadingState = useAppSelector((state) => state.auth.loading);
   const router = useRouter();
   const form = useForm<ForgotFormData>({
     resolver: zodResolver(forgotSchema),
@@ -35,8 +41,15 @@ export default function ForgotPass() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof forgotSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof forgotSchema>) {
+    const resultAction = await dispatch(resetPassword(values));
+    if (resetPassword.fulfilled.match(resultAction)) {
+      const message: any = resultAction.payload.message;
+      toast.success(message);
+    } else if (resetPassword.rejected.match(resultAction)) {
+      const message: any = resultAction.payload;
+      toast.error(message);
+    }
   }
 
   function handleNavigate() {
@@ -72,7 +85,14 @@ export default function ForgotPass() {
                 )}
               />
               <Button type="submit" className="block w-full">
-                Gửi lại mật khẩu
+                {loadingState ? (
+                  <p className="flex content-center gap-1 justify-center items-center">
+                    <LoadingIcon />
+                    Đang xử lý...
+                  </p>
+                ) : (
+                  <p>Gửi lại mật khẩu</p>
+                )}
               </Button>
             </form>
           </Form>
