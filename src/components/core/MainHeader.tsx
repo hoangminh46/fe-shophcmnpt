@@ -26,7 +26,7 @@ export default function MainHeader() {
   }
 
   return (
-    <header className="border-b-1 h-4.5">
+    <header className="border-b-1 h-4.5 fixed top-0 left-0 right-0 z-50 bg-white mb-[71px]">
       <div className="container flex items-center h-full justify-between">
         <div className="flex items-center gap-10">
           <Link href={"/"}>

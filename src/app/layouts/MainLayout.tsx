@@ -10,7 +10,7 @@ export default function MainLayout({
   return (
     <Fragment>
       <MainHeader />
-      {children}
+      <div className="pt-[71px]">{children}</div>
       <Footer />
     </Fragment>
   );
