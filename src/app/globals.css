@@ -71,4 +71,21 @@
     max-width: 1440px !important;
     margin: 0 auto;
   }
+
+  ::-webkit-scrollbar {
+    width: 12px !important;
+    overflow: visible !important;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+  }
 }

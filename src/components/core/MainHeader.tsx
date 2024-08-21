@@ -26,7 +26,7 @@ export default function MainHeader() {
   }
 
   return (
-    <header className="border-b-1 h-4.5 fixed top-0 left-0 right-0 z-50 bg-white mb-[71px]">
+    <header className="border-b-1 h-4.5 fixed top-0 left-0 right-0 z-50 bg-white mb-[71px] w-full max-w-full">
       <div className="container flex items-center h-full justify-between">
         <div className="flex items-center gap-10">
           <Link href={"/"}>
@@ -78,9 +78,11 @@ export default function MainHeader() {
               <UserIcon />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem className="p-4 font-medium">
-                Thông tin cá nhân
-              </DropdownMenuItem>
+              <Link href={"/profile"}>
+                <DropdownMenuItem className="p-4 font-medium">
+                  Thông tin cá nhân
+                </DropdownMenuItem>
+              </Link>
               <DropdownMenuItem
                 className="p-4 font-medium"
                 onClick={handleLogout}

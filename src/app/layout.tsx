@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={montFont.className}>
         <StoreProvider>
-          <div className="app">{children}</div>
+          <div className="app relative w-full">{children}</div>
         </StoreProvider>
         <Toaster position="top-right" />
       </body>
