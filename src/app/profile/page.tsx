@@ -1,8 +1,19 @@
+"use client";
 import MainLayout from "@/app/layouts/MainLayout";
+import ProfileForm from "@/components/core/ProfileForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { fetchCity } from "@/lib/features/appSlice";
+import { useAppDispatch } from "@/lib/hooks";
 import Image from "next/image";
+import { useEffect } from "react";
 
 export default function Profile() {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchCity());
+  }, []);
+
   return (
     <MainLayout>
       <div className="container mt-12 w-[1240px] mx-auto mb-28">
@@ -39,7 +50,7 @@ export default function Profile() {
             >
               Đổi mật khẩu
             </TabsTrigger>
-            <div className="p-0 mb-6 self-baseline text-red-600 font-semibold cursor-pointer">
+            <div className="p-0 mb-6 self-baseline text-red-600 font-semibold cursor-pointer text-sm">
               Đăng xuất
             </div>
           </TabsList>
@@ -61,7 +72,7 @@ export default function Profile() {
             />
           </TabsContent>
           <TabsContent value="account" className="w-3/4">
-            Account
+            <ProfileForm />
           </TabsContent>
           <TabsContent value="history" className="w-3/4">
             Hisotry
