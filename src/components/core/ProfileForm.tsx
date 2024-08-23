@@ -42,17 +42,23 @@ const profileSchema = z.object({
   city: z.string().min(1, "Vui lòng chọn tỉnh/thành phố"),
   ward: z.string().min(1, "Vui lòng chọn quận/huyện"),
   district: z.string().min(1, "Vui lòng chọn phường/xã"),
+  detailAddress: z.string().min(1, "Vui lòng nhập trường này"),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
 
+interface City {
+  Id: string;
+  Name: string;
+  Districts: object[];
+}
+
 export default function ProfileForm() {
   const dispatch = useAppDispatch();
   const cityData = useAppSelector((state) => state.app.cityData);
-  const [citis, setCitis] = useState([]);
+  const [citis, setCitis] = useState<City>({} as City);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
-  console.log(cityData);
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     mode: "onBlur",
@@ -63,25 +69,55 @@ export default function ProfileForm() {
       city: "",
       ward: "",
       district: "",
+      detailAddress: "",
     },
   });
 
   function handleCityChange(value: any) {
     const selectedCity = cityData.find((city: any) => city.Id === value);
-    console.log("selected city", selectedCity);
     setCitis(selectedCity);
-    setDistricts(selectedCity.Districts);
+    setDistricts(selectedCity?.Districts);
     setWards([]);
+    form.setValue("district", "");
+    form.setValue("ward", "");
   }
 
   const handleDistrictChange = (value: any) => {
-    const selectedDistrict = districts.find(
+    const selectedDistrict: any = districts.find(
       (district: any) => district.Id === value
     );
     setWards(selectedDistrict?.Wards);
   };
 
-  async function onSubmit(values: z.infer<typeof profileSchema>) {}
+  async function onSubmit(values: z.infer<typeof profileSchema>) {
+    const citySelected = citis.Name;
+    const districtSelected = districts.reduce((acc, curr: any) => {
+      if (curr.Id === values.district) {
+        return curr.Name;
+      }
+      return acc;
+    }, "");
+    const wardSelected = wards.reduce((acc, curr: any) => {
+      if (curr.Id === values.ward) {
+        return curr.Name;
+      }
+      return acc;
+    }, "");
+
+    const data = {
+      id: "123",
+      fullName: values.fullName,
+      phone: values.phoneNumber,
+      address: {
+        city: citySelected,
+        district: districtSelected,
+        ward: wardSelected,
+        detail: values.detailAddress,
+      },
+    };
+
+    console.log("----data", data);
+  }
 
   return (
     <Form {...form}>
@@ -107,7 +143,7 @@ export default function ProfileForm() {
             <FormItem>
               <FormLabel>Họ và tên</FormLabel>
               <FormControl>
-                <Input placeholder="Nguyễn Văn A" {...field} type="text" />
+                <Input placeholder="Nhập họ tên..." {...field} type="text" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -120,7 +156,11 @@ export default function ProfileForm() {
             <FormItem>
               <FormLabel>Số điện thoại</FormLabel>
               <FormControl>
-                <Input placeholder="0123456789" {...field} type="text" />
+                <Input
+                  placeholder="Nhập số điện thoại..."
+                  {...field}
+                  type="text"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -145,7 +185,7 @@ export default function ProfileForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {cityData.map((item: any) => (
+                  {cityData?.map((item: any) => (
                     <SelectItem key={item.Id} value={item.Id}>
                       {item.Name}
                     </SelectItem>
@@ -175,7 +215,7 @@ export default function ProfileForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent onChange={handleCityChange}>
-                  {districts.map((item: any) => (
+                  {districts?.map((item: any) => (
                     <SelectItem key={item.Id} value={item.Id}>
                       {item.Name}
                     </SelectItem>
@@ -199,13 +239,26 @@ export default function ProfileForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent onChange={handleCityChange}>
-                  {wards.map((item: any) => (
+                  {wards?.map((item: any) => (
                     <SelectItem key={item.Id} value={item.Id}>
                       {item.Name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="detailAddress"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Địa chỉ cụ thể</FormLabel>
+              <FormControl>
+                <Input placeholder="Nhập địa chỉ..." {...field} type="text" />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
