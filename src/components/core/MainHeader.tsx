@@ -14,6 +14,8 @@ import CartIcon from "@/icons/CartIcon";
 import { useAppDispatch } from "@/lib/hooks";
 import { logout } from "@/lib/features/authSlice";
 import { useRouter } from "next/navigation";
+import Cart from "@/components/core/Cart";
+import { toggleCart } from "@/lib/features/appSlice";
 
 export default function MainHeader() {
   const router = useRouter();
@@ -91,12 +93,13 @@ export default function MainHeader() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <div className="relative">
+          <div className="relative" onClick={() => dispatch(toggleCart())}>
             <CartIcon />
             <span className="absolute text-xs top-0 -right-1 bg-black text-white px-1 text-center rounded-full">
               3
             </span>
           </div>
+          <Cart />
         </div>
       </div>
     </header>
