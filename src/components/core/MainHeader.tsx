@@ -11,14 +11,16 @@ import Link from "next/link";
 import SearchIcon from "@/icons/SearchIcon";
 import UserIcon from "@/icons/UserIcon";
 import CartIcon from "@/icons/CartIcon";
-import { useAppDispatch } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { logout } from "@/lib/features/authSlice";
 import { useRouter } from "next/navigation";
 import Cart from "@/components/core/Cart";
-import { toggleCart } from "@/lib/features/appSlice";
+import { toggleCart, toggleSearch } from "@/lib/features/appSlice";
+import Search from "@/components/core/Search";
 
 export default function MainHeader() {
   const router = useRouter();
+  const userAuth = useAppSelector((state) => state.auth.isAuthenticated);
   const dispatch = useAppDispatch();
 
   function handleLogout() {
@@ -72,34 +74,52 @@ export default function MainHeader() {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <div>
+          <div onClick={() => dispatch(toggleSearch())}>
             <SearchIcon />
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger className="outline-none font-medium">
-              <UserIcon />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <Link href={"/profile"}>
-                <DropdownMenuItem className="p-4 font-medium">
-                  Thông tin cá nhân
+          {userAuth ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger className="outline-none font-medium">
+                <UserIcon />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <Link href={"/profile"}>
+                  <DropdownMenuItem className="p-4 font-medium">
+                    Thông tin cá nhân
+                  </DropdownMenuItem>
+                </Link>
+                <DropdownMenuItem
+                  className="p-4 font-medium"
+                  onClick={handleLogout}
+                >
+                  Đăng xuất
                 </DropdownMenuItem>
-              </Link>
-              <DropdownMenuItem
-                className="p-4 font-medium"
-                onClick={handleLogout}
-              >
-                Đăng xuất
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <div className="relative" onClick={() => dispatch(toggleCart())}>
-            <CartIcon />
-            <span className="absolute text-xs top-0 -right-1 bg-black text-white px-1 text-center rounded-full">
-              3
-            </span>
-          </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link href={"/auth"}>
+              <UserIcon />
+            </Link>
+          )}
+          {userAuth ? (
+            <div className="relative" onClick={() => dispatch(toggleCart())}>
+              <CartIcon />
+              <span className="absolute text-xs top-0 -right-1 bg-black text-white px-1 text-center rounded-full">
+                3
+              </span>
+            </div>
+          ) : (
+            <Link href={"/auth"}>
+              <div className="relative">
+                <CartIcon />
+                <span className="absolute text-xs top-0 -right-1 bg-black text-white px-1 text-center rounded-full">
+                  0
+                </span>
+              </div>
+            </Link>
+          )}
           <Cart />
+          <Search />
         </div>
       </div>
     </header>

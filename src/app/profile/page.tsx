@@ -1,23 +1,34 @@
 "use client";
 import MainLayout from "@/app/layouts/MainLayout";
+import ChangePassForm from "@/components/core/ChangePassForm";
 import ProfileForm from "@/components/core/ProfileForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { fetchCity } from "@/lib/features/appSlice";
-import { useAppDispatch } from "@/lib/hooks";
+import { fetchUser, logout } from "@/lib/features/authSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Profile() {
+  const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
-
+  const router = useRouter();
   useEffect(() => {
     dispatch(fetchCity());
+    dispatch(fetchUser());
   }, []);
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    dispatch(logout());
+    router.push("/auth");
+  }
 
   return (
     <MainLayout>
       <div className="container mt-12 w-[1240px] mx-auto mb-28">
-        <h2 className="text-2xl font-semibold">Xin chào, Hoàng Minh!</h2>
+        <h2 className="text-2xl font-semibold">Xin chào, {user?.fullName}</h2>
         <Tabs defaultValue="offer" className="w-full flex mt-10">
           <TabsList className="flex-col h-auto bg-transparent justify-start w-1/4">
             <div className="font-semibold mb-6 text-black text-left text-lg w-full">
@@ -50,7 +61,10 @@ export default function Profile() {
             >
               Đổi mật khẩu
             </TabsTrigger>
-            <div className="p-0 mb-6 self-baseline text-red-600 font-semibold cursor-pointer text-sm">
+            <div
+              className="p-0 mb-6 self-baseline text-red-600 font-semibold cursor-pointer text-sm"
+              onClick={handleLogout}
+            >
               Đăng xuất
             </div>
           </TabsList>
@@ -78,7 +92,7 @@ export default function Profile() {
             Hisotry
           </TabsContent>
           <TabsContent value="change-pass" className="w-3/4">
-            Change your password here.
+            <ChangePassForm />
           </TabsContent>
         </Tabs>
       </div>

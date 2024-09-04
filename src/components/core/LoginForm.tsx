@@ -53,7 +53,7 @@ export default function LoginForm({ onSwitchTab }: LoginFormProps) {
       const { token, message } = resultAction.payload;
       localStorage.setItem("token", token);
       toast.success(message);
-      router.push("/");
+      router.push("/profile");
     } else if (loginUser.rejected.match(resultAction)) {
       const message: any = resultAction.payload;
       toast.error(message);

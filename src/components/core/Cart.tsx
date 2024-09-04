@@ -11,6 +11,12 @@ export default function Cart() {
     dispatch(toggleCart());
   };
 
+  function handleClickCart(e: any) {
+    if (e.currentTarget === e.target) {
+      dispatch(toggleCart());
+    }
+  }
+
   return (
     <div
       className={`left-0 right-0 top-[72px] bg-gray-200 bg-opacity-60 h-screen fixed z-50 w-full transition-opacity duration-300 ease-in-out ${
@@ -18,6 +24,7 @@ export default function Cart() {
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"
       }`}
+      onClick={(e) => handleClickCart(e)}
     >
       <div
         className={`absolute right-0 bg-white border border-gray-300 transition-transform duration-300 ease-in-out w-1/3 ${

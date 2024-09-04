@@ -4,11 +4,13 @@ import axios from "axios";
 interface AppState {
   cityData: any | null;
   toggleCart: any | null;
+  toggleSearch: any | null;
 }
 
 const initialState: AppState = {
   cityData: null,
   toggleCart: false,
+  toggleSearch: false,
 };
 
 export const fetchCity = createAsyncThunk("app/fetchCity", async () => {
@@ -25,6 +27,9 @@ export const appSlice = createSlice({
     toggleCart: (state) => {
       state.toggleCart = !state.toggleCart;
     },
+    toggleSearch: (state) => {
+      state.toggleSearch = !state.toggleSearch;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCity.fulfilled, (state, action) => {
@@ -33,5 +38,5 @@ export const appSlice = createSlice({
   },
 });
 
-export const { toggleCart } = appSlice.actions;
+export const { toggleCart, toggleSearch } = appSlice.actions;
 export default appSlice.reducer;

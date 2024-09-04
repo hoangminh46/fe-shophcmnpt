@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { fetchUser, updateUsers } from "@/lib/features/authSlice";
 
 const profileSchema = z.object({
   email: z
@@ -54,6 +55,7 @@ interface City {
 }
 
 export default function ProfileForm() {
+  const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
   const cityData = useAppSelector((state) => state.app.cityData);
   const [citis, setCitis] = useState<City>({} as City);
@@ -63,13 +65,13 @@ export default function ProfileForm() {
     resolver: zodResolver(profileSchema),
     mode: "onBlur",
     defaultValues: {
-      email: "minh123@gmail.com",
-      fullName: "",
-      phoneNumber: "",
-      city: "",
-      ward: "",
-      district: "",
-      detailAddress: "",
+      email: user?.email || "",
+      fullName: user?.fullName || "",
+      phoneNumber: user?.phone || "",
+      city: user?.address?.city?.id || "",
+      ward: user?.address?.ward?.id || "",
+      district: user?.address?.district?.id || "",
+      detailAddress: user?.address?.detail || "",
     },
   });
 
@@ -89,6 +91,32 @@ export default function ProfileForm() {
     setWards(selectedDistrict?.Wards);
   };
 
+  function handleLoadCity() {
+    const selectedCity = cityData.find(
+      (city: any) => city.Id === user?.address?.city?.id
+    );
+
+    setCitis(selectedCity);
+    const newDistricts = selectedCity?.Districts || [];
+    setDistricts(newDistricts);
+
+    const selectedDistrict: any = newDistricts.find(
+      (district: any) => district.Id === user?.address?.district?.id
+    );
+
+    setWards(selectedDistrict?.Wards || []);
+  }
+
+  useEffect(() => {
+    if (user) {
+      handleLoadCity();
+    }
+  }, [user]);
+
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, []);
+
   async function onSubmit(values: z.infer<typeof profileSchema>) {
     const citySelected = citis.Name;
     const districtSelected = districts.reduce((acc, curr: any) => {
@@ -105,18 +133,28 @@ export default function ProfileForm() {
     }, "");
 
     const data = {
-      id: "123",
+      id: user.id,
       fullName: values.fullName,
       phone: values.phoneNumber,
       address: {
-        city: citySelected,
-        district: districtSelected,
-        ward: wardSelected,
+        city: {
+          id: values.city,
+          name: citySelected,
+        },
+        district: {
+          id: values.district,
+          name: districtSelected,
+        },
+        ward: {
+          id: values.ward,
+          name: wardSelected,
+        },
         detail: values.detailAddress,
       },
     };
-
-    console.log("----data", data);
+    dispatch(updateUsers({ user: data })).then(() => {
+      dispatch(fetchUser());
+    });
   }
 
   return (

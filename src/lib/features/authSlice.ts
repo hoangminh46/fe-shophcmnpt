@@ -1,11 +1,21 @@
-import { login, register, resetPass } from "@/services/authService";
+import {
+  changePass,
+  getUser,
+  login,
+  register,
+  resetPass,
+  updateUser,
+} from "@/services/authService";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+import { toast } from "sonner";
 
 interface AuthState {
   userToken: any | null;
   isAuthenticated: boolean;
   loading: boolean;
   message: string | null;
+  user: any | null;
 }
 
 const initialState: AuthState = {
@@ -13,6 +23,7 @@ const initialState: AuthState = {
   isAuthenticated: false,
   loading: false,
   message: null,
+  user: null,
 };
 
 export const loginUser = createAsyncThunk(
@@ -68,6 +79,49 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
+export const fetchUser = createAsyncThunk(
+  "auth/fetchUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await getUser();
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Thao tác thất bại"
+      );
+    }
+  }
+);
+
+export const updateUsers = createAsyncThunk(
+  "auth/updateUser",
+  async ({ user }: { user: any }, { rejectWithValue }) => {
+    try {
+      const data = await updateUser(user);
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Thao tác thất bại"
+      );
+    }
+  }
+);
+
+export const changePassword = createAsyncThunk(
+  "auth/changePassword",
+  async ({ passData }: { passData: any }, { rejectWithValue }) => {
+    try {
+      const data = await changePass(passData);
+      console.log("---data", data);
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Thao tác thất bại"
+      );
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -75,6 +129,7 @@ export const authSlice = createSlice({
     logout: (state) => {
       state.userToken = null;
       state.isAuthenticated = false;
+      state.user = null;
     },
   },
   extraReducers: (builder) => {
@@ -100,6 +155,8 @@ export const authSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.message = action.payload.message;
+        state.userToken = action.payload.token;
+        state.isAuthenticated = true;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
@@ -116,6 +173,15 @@ export const authSlice = createSlice({
       .addCase(resetPassword.rejected, (state, action) => {
         state.loading = false;
         state.message = action.payload as string;
+      })
+      .addCase(fetchUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+      })
+      .addCase(updateUsers.fulfilled, (state, action) => {
+        toast.success(action.payload.message);
+        state.message = action.payload.message;
+        state.userToken = action.payload.token;
+        localStorage.setItem("token", action.payload.token);
       });
   },
 });
