@@ -112,7 +112,6 @@ export const changePassword = createAsyncThunk(
   async ({ passData }: { passData: any }, { rejectWithValue }) => {
     try {
       const data = await changePass(passData);
-      console.log("---data", data);
       return data;
     } catch (error: any) {
       return rejectWithValue(
@@ -182,6 +181,11 @@ export const authSlice = createSlice({
         state.message = action.payload.message;
         state.userToken = action.payload.token;
         localStorage.setItem("token", action.payload.token);
+      })
+      .addCase(changePassword.fulfilled, (state, action) => {
+        state.isAuthenticated = false;
+        state.user = null;
+        state.userToken = null;
       });
   },
 });

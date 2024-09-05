@@ -27,6 +27,7 @@ export default function HomeBanner() {
             className="w-full h-[777px] object-cover"
             src="/images/banner/bn1.webp"
             alt="Logo"
+            loading="lazy"
             width={2000}
             height={2000}
             quality={100}
@@ -37,6 +38,7 @@ export default function HomeBanner() {
             className="w-full h-[777px] object-cover"
             src="/images/banner/banner2.webp"
             alt="Logo"
+            loading="lazy"
             width={2000}
             height={2000}
             quality={100}
@@ -47,6 +49,7 @@ export default function HomeBanner() {
             className="w-full h-[777px] object-cover"
             src="/images/banner/banner3.webp"
             alt="Logo"
+            loading="lazy"
             width={2000}
             height={2000}
             quality={100}

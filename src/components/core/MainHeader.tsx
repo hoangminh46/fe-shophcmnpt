@@ -37,6 +37,7 @@ export default function MainHeader() {
             <Image
               src="/images/logo.webp"
               alt="Logo"
+              loading="lazy"
               width={150}
               height={60}
               quality={70}

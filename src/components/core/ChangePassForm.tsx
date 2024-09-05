@@ -16,6 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAppDispatch } from "@/lib/hooks";
 import { changePassword } from "@/lib/features/authSlice";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const changePassSchema = z.object({
   currentPassword: z
@@ -29,6 +31,7 @@ type ChangePassFormData = z.infer<typeof changePassSchema>;
 
 export default function ChangePassForm() {
   const dispatch = useAppDispatch();
+  const route = useRouter();
   const form = useForm<ChangePassFormData>({
     resolver: zodResolver(changePassSchema),
     mode: "onBlur",
@@ -40,7 +43,16 @@ export default function ChangePassForm() {
   });
 
   async function onSubmit(values: z.infer<typeof changePassSchema>) {
-    dispatch(changePassword({ passData: values }));
+    const resultAction = await dispatch(changePassword({ passData: values }));
+    if (changePassword.fulfilled.match(resultAction)) {
+      const message: any = resultAction.payload.message;
+      toast.success(message);
+      route.push("/auth");
+      localStorage.removeItem("token");
+    } else if (changePassword.rejected.match(resultAction)) {
+      const message: any = resultAction.payload;
+      toast.error(message);
+    }
   }
 
   return (

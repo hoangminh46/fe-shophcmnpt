@@ -80,6 +80,7 @@ export default function Profile() {
               className="w-full h-auto"
               src="/images/profile.jpg"
               alt="Logo"
+              loading="lazy"
               width={1000}
               height={1000}
               quality={100}

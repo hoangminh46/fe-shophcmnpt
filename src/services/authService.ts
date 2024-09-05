@@ -75,6 +75,7 @@ export const changePass = async (data: any) => {
         {
           currentPassword: data.currentPassword,
           newPassword: data.newPassword,
+          renewPassword: data.renewPassword,
         },
         {
           headers: { Authorization: `Bearer ${token}` },
