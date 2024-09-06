@@ -4,9 +4,19 @@ import HomeBanner from "@/components/core/HomeBanner";
 import ProductItem from "@/components/core/ProductItem";
 import PromotionBanner from "@/components/core/PromotionBanner";
 import { Button } from "@/components/ui/button";
+import { fetchProducts } from "@/lib/features/appSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import Link from "next/link";
+import { useEffect } from "react";
 
 export default function Home() {
+  const products = useAppSelector((state) => state.app.products);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, []);
+
   return (
     <MainLayout>
       <PromotionBanner />
@@ -18,7 +28,9 @@ export default function Home() {
         </div>
       </div>
       <div className="container">
-        <ProductItem />
+        {products.map((product: any) => (
+          <ProductItem key={product.id} product={product} />
+        ))}
       </div>
     </MainLayout>
   );

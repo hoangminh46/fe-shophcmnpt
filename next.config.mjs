@@ -3,10 +3,10 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "http",
-        hostname: "cdn.authentic-shoes.com",
+        protocol: "https",
+        hostname: "drive.usercontent.google.com",
         port: "",
-        pathname: "/wp-content/uploads/**",
+        pathname: "/**",
       },
     ],
   },
