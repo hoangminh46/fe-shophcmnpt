@@ -27,9 +27,13 @@ export default function Home() {
           <div className="bg-black h-px ml-5 w-[140px]"></div>
         </div>
       </div>
-      <div className="container">
+      <div className="container flex flex-wrap gap-y-8">
         {products.map((product: any) => (
-          <ProductItem key={product.id} product={product} />
+          <ProductItem
+            key={product.id}
+            product={product}
+            link={`/products/${product.id}`}
+          />
         ))}
       </div>
     </MainLayout>
