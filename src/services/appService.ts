@@ -8,3 +8,12 @@ export const getProduct = async () => {
     throw error;
   }
 };
+
+export const getProductById = async (id: string) => {
+  try {
+    const response = await axiosInstance.get(`/products/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

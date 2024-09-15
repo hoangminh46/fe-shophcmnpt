@@ -80,4 +80,8 @@
     max-width: 1440px !important;
     margin: 0 auto;
   }
+
+  input.input-size:checked + label {
+    @apply shadow-[0_0_0_0.2rem_rgba(0,0,0,1)];
+  }
 }

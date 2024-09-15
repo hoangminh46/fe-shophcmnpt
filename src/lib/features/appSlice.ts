@@ -1,4 +1,4 @@
-import { getProduct } from "@/services/appService";
+import { getProduct, getProductById } from "@/services/appService";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -6,14 +6,16 @@ interface AppState {
   cityData: any | null;
   toggleCart: any | null;
   toggleSearch: any | null;
-  products: any | null
+  products: any | null;
+  product: any | null;
 }
 
 const initialState: AppState = {
   cityData: null,
   toggleCart: false,
   toggleSearch: false,
-  products: []
+  products: [],
+  product: null,
 };
 
 export const fetchCity = createAsyncThunk("app/fetchCity", async () => {
@@ -28,6 +30,20 @@ export const fetchProducts = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const data = await getProduct();
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Thao tác thất bại"
+      );
+    }
+  }
+);
+
+export const fetchProductDetail = createAsyncThunk(
+  "auth/fetchProductDetail",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const data = await getProductById(id);
       return data;
     } catch (error: any) {
       return rejectWithValue(
@@ -54,6 +70,9 @@ export const appSlice = createSlice({
     });
     builder.addCase(fetchProducts.fulfilled, (state, action) => {
       state.products = action.payload;
+    });
+    builder.addCase(fetchProductDetail.fulfilled, (state, action) => {
+      state.product = action.payload;
     });
   },
 });
