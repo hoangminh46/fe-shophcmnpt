@@ -7,6 +7,8 @@ import MainLayout from "@/app/layouts/MainLayout";
 import NotFound from "@/app/not-found";
 import Image from "next/image";
 import HeartIcon from "@/icons/HeartIcon";
+import InputCart from "@/components/core/InputCart";
+import { Button } from "@/components/ui/button";
 
 export default function ProductDetail() {
   const product = useAppSelector((state) => state.app.product);
@@ -55,9 +57,6 @@ export default function ProductDetail() {
               <HeartIcon />
             </div>
           </div>
-          {/* <h1>{product?.name}</h1>
-          <p>{product?.brand}</p>
-          <p>Price: ${product?.oldPrice}</p> */}
           <div className="w-[45%]">
             <p className="text-[40px] font-semibold mb-2">{product?.name}</p>
             <p className="text-[32px] font-medium mb-2">{product?.category}</p>
@@ -81,7 +80,7 @@ export default function ProductDetail() {
                     />
                     <label
                       htmlFor={item} // Sử dụng item làm giá trị cho htmlFor
-                      className="border border-white rounded-full shadow-[0_0_0_.2rem_rgba(204,204,204,1)] cursor-pointer inline-block text-[14px] h-full text-center w-full"
+                      className="border border-white rounded-full shadow-[0_0_0_.2rem_rgba(204,204,204,1)] cursor-pointer inline-block text-[14px] h-full text-center w-full content-center"
                     >
                       {item}
                     </label>
@@ -89,6 +88,11 @@ export default function ProductDetail() {
                 ))}
               </div>
             </div>
+            <div className="mt-4">
+              <p>Số lượng</p>
+              <InputCart />
+            </div>
+            <Button className="w-full mt-4">Thêm vào giỏ hàng</Button>
           </div>
         </div>
         <div></div>
