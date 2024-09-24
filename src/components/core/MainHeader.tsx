@@ -12,15 +12,18 @@ import SearchIcon from "@/icons/SearchIcon";
 import UserIcon from "@/icons/UserIcon";
 import CartIcon from "@/icons/CartIcon";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { logout } from "@/lib/features/authSlice";
+import { fetchUser, logout } from "@/lib/features/authSlice";
 import { useRouter } from "next/navigation";
 import Cart from "@/components/core/Cart";
 import { toggleCart, toggleSearch } from "@/lib/features/appSlice";
 import Search from "@/components/core/Search";
+import { useEffect } from "react";
+import { getCartByUserId } from "@/services/appService";
 
 export default function MainHeader() {
   const router = useRouter();
   const userAuth = useAppSelector((state) => state.auth.isAuthenticated);
+  const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
 
   function handleLogout() {
@@ -28,6 +31,12 @@ export default function MainHeader() {
     dispatch(logout());
     router.push("/auth");
   }
+
+  useEffect(() => {
+    dispatch(fetchUser())
+    getCartByUserId(user?.id)
+  }, [dispatch]);
+
 
   return (
     <header className="border-b-1 h-4.5 fixed top-0 left-0 right-0 z-50 bg-white mb-[71px] w-full max-w-full">

@@ -9,6 +9,8 @@ import Image from "next/image";
 import HeartIcon from "@/icons/HeartIcon";
 import InputCart from "@/components/core/InputCart";
 import { Button } from "@/components/ui/button";
+import { v4 as uuidv4 } from "uuid";
+import { toast } from "sonner";
 
 export default function ProductDetail() {
   const product = useAppSelector((state) => state.app.product);
@@ -18,6 +20,39 @@ export default function ProductDetail() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [size, setSize] = useState(null);
+
+  function handlePlus() {
+    if (quantity < 100) {
+      setQuantity((prev) => prev + 1);
+    }
+  }
+
+  function handleMinus() {
+    if (quantity > 0) {
+      setQuantity((prev) => prev - 1);
+    }
+  }
+
+  function handleAddToCart() {
+    const data = {
+      id: uuidv4(),
+      productID: product?.id,
+      name: product?.name,
+      thumbnail: product?.thumbnail,
+      oldPrice: product?.oldPrice,
+      salePrice: product?.salePrice,
+      size,
+      quantity,
+      total: product?.salePrice * quantity,
+    };
+    if (size) {
+      console.log(data);
+    } else {
+      toast.warning("Bạn chưa chọn size");
+    }
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -77,6 +112,7 @@ export default function ProductDetail() {
                       id={item}
                       value={item}
                       className="hidden input-size"
+                      onChange={() => setSize(item)}
                     />
                     <label
                       htmlFor={item} // Sử dụng item làm giá trị cho htmlFor
@@ -90,9 +126,15 @@ export default function ProductDetail() {
             </div>
             <div className="mt-4">
               <p>Số lượng</p>
-              <InputCart />
+              <InputCart
+                clickMinus={handleMinus}
+                clickAdd={handlePlus}
+                inputValue={quantity}
+              />
             </div>
-            <Button className="w-full mt-4">Thêm vào giỏ hàng</Button>
+            <Button className="w-full mt-4" onClick={handleAddToCart}>
+              Thêm vào giỏ hàng
+            </Button>
           </div>
         </div>
         <div></div>

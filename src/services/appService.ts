@@ -17,3 +17,12 @@ export const getProductById = async (id: string) => {
     throw error;
   }
 };
+
+export const getCartByUserId = async (id:string) => {
+  try {
+    const response = await axiosInstance.get(`carts/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
