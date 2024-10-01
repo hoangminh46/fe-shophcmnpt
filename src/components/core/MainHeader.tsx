@@ -17,13 +17,14 @@ import { useRouter } from "next/navigation";
 import Cart from "@/components/core/Cart";
 import { toggleCart, toggleSearch } from "@/lib/features/appSlice";
 import Search from "@/components/core/Search";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getCartByUserId } from "@/services/appService";
 
 export default function MainHeader() {
   const router = useRouter();
   const userAuth = useAppSelector((state) => state.auth.isAuthenticated);
   const user = useAppSelector((state) => state.auth.user);
+  const [cart, setCart] = useState<any>({});
   const dispatch = useAppDispatch();
 
   function handleLogout() {
@@ -33,10 +34,20 @@ export default function MainHeader() {
   }
 
   useEffect(() => {
-    dispatch(fetchUser())
-    getCartByUserId(user?.id)
+    dispatch(fetchUser());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (user) {
+      getCartByUserId(user?.id)
+        .then((data) => {
+          setCart(data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
 
   return (
     <header className="border-b-1 h-4.5 fixed top-0 left-0 right-0 z-50 bg-white mb-[71px] w-full max-w-full">
@@ -115,7 +126,7 @@ export default function MainHeader() {
             <div className="relative" onClick={() => dispatch(toggleCart())}>
               <CartIcon />
               <span className="absolute text-xs top-0 -right-1 bg-black text-white px-1 text-center rounded-full">
-                3
+                {cart?.cartQuantity}
               </span>
             </div>
           ) : (
@@ -128,7 +139,7 @@ export default function MainHeader() {
               </div>
             </Link>
           )}
-          <Cart />
+          <Cart cartProducts={cart} />
           <Search />
         </div>
       </div>

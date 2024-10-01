@@ -4,14 +4,18 @@ import MinusIcon from "@/icons/MinusIcon";
 import PlusIcon from "@/icons/PlusIcon";
 
 interface IPropsInputCard {
-  clickMinus: () => void,
-  clickAdd: () => void,
-  inputValue: any
+  clickMinus?: () => void;
+  clickAdd?: () => void;
+  inputValue?: any;
 }
 
-export default function InputCart({clickMinus, clickAdd, inputValue}: IPropsInputCard) {
+export default function InputCart({
+  clickMinus,
+  clickAdd,
+  inputValue,
+}: IPropsInputCard) {
   return (
-    <div className="inline-flex h-[30px] border border-[#000] mt-2">
+    <div className="inline-flex h-[30px] border border-[#000]">
       <div
         className="w-[30px] h-30[px] border-r-1 border-[#000] cursor-pointer"
         onClick={clickMinus}
