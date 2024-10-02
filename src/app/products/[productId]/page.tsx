@@ -11,9 +11,12 @@ import InputCart from "@/components/core/InputCart";
 import { Button } from "@/components/ui/button";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
+import { addProduct } from "@/services/appService";
+import { fetchCart } from "@/lib/features/authSlice";
 
 export default function ProductDetail() {
   const product = useAppSelector((state) => state.app.product);
+  const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
 
   const { productId } = useParams<{ productId: string }>();
@@ -38,6 +41,7 @@ export default function ProductDetail() {
   function handleAddToCart() {
     const data = {
       id: uuidv4(),
+      userID: user?.id,
       productID: product?.id,
       name: product?.name,
       thumbnail: product?.thumbnail,
@@ -47,8 +51,10 @@ export default function ProductDetail() {
       quantity,
       total: product?.salePrice * quantity,
     };
-    if (size) {
-      console.log(data);
+    if (size && user) {
+      addProduct(data);
+      dispatch(fetchCart(user?.id));
+      toast.success(`Thêm sản phẩm ${product?.name} x${quantity}`);
     } else {
       toast.warning("Bạn chưa chọn size");
     }

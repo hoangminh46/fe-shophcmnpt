@@ -8,9 +8,6 @@ import Image from "next/image";
 export default function Cart({ cartProducts }: { cartProducts: any }) {
   const cartState = useAppSelector((state) => state.app.toggleCart);
   const dispatch = useAppDispatch();
-
-  console.log("----cartProducts", cartProducts);
-
   const toggleActive = () => {
     dispatch(toggleCart());
   };

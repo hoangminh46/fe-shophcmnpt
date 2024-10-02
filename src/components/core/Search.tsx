@@ -1,3 +1,4 @@
+import ProductItem from "@/components/core/ProductItem";
 import BackIcon from "@/icons/BackIcon";
 import { toggleSearch } from "@/lib/features/appSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
@@ -7,13 +8,13 @@ export default function Search() {
   const [searchValue, setSearchValue] = useState("");
   const dispatch = useAppDispatch();
   const showSearch = useAppSelector((state) => state.app.toggleSearch);
-  const products = useAppSelector((state) => state.app.cityData);
+  const products = useAppSelector((state) => state.app.products);
 
   const searchValueRegex = searchValue.replace(new RegExp("\\\\", "g"), "\\\\");
 
-  // const searchProducts = products.filter((item: any) => {
-  //   return item.name.toLowerCase().match(searchValueRegex.trim().toLowerCase());
-  // });
+  const searchProducts = products.filter((item: any) => {
+    return item.name.toLowerCase().match(searchValueRegex.trim().toLowerCase());
+  });
 
   const handleClick = () => {
     dispatch(toggleSearch());
@@ -51,13 +52,18 @@ export default function Search() {
         />
       </div>
       <div className="text-[2.4rem] mb-5 text-center">
-        {/* {searchValue ? `Đã tìm thấy ${searchProducts.length} sản phẩm` : ""} */}
+        {searchValue ? `Đã tìm thấy ${searchProducts.length} sản phẩm` : ""}
       </div>
-      <div className="flex flex-wrap gap-5 h-[400px] mx-[50px] mb-5 overflow-auto">
-        {/* {searchValue &&
-          searchProducts.map((item) => (
-            <ProductItems data={item} key={item.id} />
-          ))} */}
+      <div className="flex flex-wrap gap-y-10 h-[450px] mx-[50px] mb-5 overflow-auto">
+        {searchValue &&
+          searchProducts.map((product: any) => (
+            <ProductItem
+              key={product.id}
+              product={product}
+              link={`/products/${product.id}`}
+              closeSearch={true}
+            />
+          ))}
       </div>
     </div>
   );

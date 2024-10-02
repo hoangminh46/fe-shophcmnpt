@@ -12,7 +12,7 @@ import SearchIcon from "@/icons/SearchIcon";
 import UserIcon from "@/icons/UserIcon";
 import CartIcon from "@/icons/CartIcon";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { fetchUser, logout } from "@/lib/features/authSlice";
+import { fetchCart, fetchUser, logout } from "@/lib/features/authSlice";
 import { useRouter } from "next/navigation";
 import Cart from "@/components/core/Cart";
 import { toggleCart, toggleSearch } from "@/lib/features/appSlice";
@@ -24,28 +24,23 @@ export default function MainHeader() {
   const router = useRouter();
   const userAuth = useAppSelector((state) => state.auth.isAuthenticated);
   const user = useAppSelector((state) => state.auth.user);
-  const [cart, setCart] = useState<any>({});
+  const cart = useAppSelector((state) => state.auth.cart);
   const dispatch = useAppDispatch();
 
   function handleLogout() {
     localStorage.removeItem("token");
     dispatch(logout());
+    dispatch(toggleCart());
     router.push("/auth");
   }
 
   useEffect(() => {
     dispatch(fetchUser());
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     if (user) {
-      getCartByUserId(user?.id)
-        .then((data) => {
-          setCart(data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      dispatch(fetchCart(user?.id));
     }
   }, []);
 

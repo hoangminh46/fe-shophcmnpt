@@ -1,3 +1,4 @@
+import { getCartByUserId } from "@/services/appService";
 import {
   changePass,
   getUser,
@@ -16,6 +17,7 @@ interface AuthState {
   loading: boolean;
   message: string | null;
   user: any | null;
+  cart: any | null;
 }
 
 const initialState: AuthState = {
@@ -24,6 +26,7 @@ const initialState: AuthState = {
   loading: false,
   message: null,
   user: null,
+  cart: null,
 };
 
 export const loginUser = createAsyncThunk(
@@ -121,6 +124,20 @@ export const changePassword = createAsyncThunk(
   }
 );
 
+export const fetchCart = createAsyncThunk(
+  "auth/fetchCart",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const data = await getCartByUserId(id);
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Thao tác thất bại"
+      );
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -129,6 +146,7 @@ export const authSlice = createSlice({
       state.userToken = null;
       state.isAuthenticated = false;
       state.user = null;
+      state.cart = null;
     },
   },
   extraReducers: (builder) => {
@@ -186,6 +204,9 @@ export const authSlice = createSlice({
         state.isAuthenticated = false;
         state.user = null;
         state.userToken = null;
+      })
+      .addCase(fetchCart.fulfilled, (state, action) => {
+        state.cart = action.payload;
       });
   },
 });

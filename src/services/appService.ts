@@ -18,11 +18,20 @@ export const getProductById = async (id: string) => {
   }
 };
 
-export const getCartByUserId = async (id:string) => {
+export const getCartByUserId = async (id: string) => {
   try {
     const response = await axiosInstance.get(`carts/${id}`);
     return response.data;
   } catch (error) {
     throw error;
   }
-}
+};
+
+export const addProduct = async (data: any) => {
+  try {
+    const response = await axiosInstance.post(`/carts/${data.userID}`, data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

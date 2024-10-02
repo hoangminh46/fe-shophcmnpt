@@ -1,19 +1,35 @@
 import HeartIcon from "@/icons/HeartIcon";
+import { toggleSearch } from "@/lib/features/appSlice";
+import { useAppDispatch } from "@/lib/hooks";
 import Image from "next/image";
 import Link from "next/link";
 
 interface ProductProps {
   product: any;
   link: any;
+  closeSearch?: any;
 }
 
-export default function ProductItem({ product, link }: ProductProps) {
+export default function ProductItem({
+  product,
+  link,
+  closeSearch,
+}: ProductProps) {
+  const dispatch = useAppDispatch();
+
+  function handleCloseSearch() {
+    if (closeSearch) {
+      dispatch(toggleSearch());
+    }
+  }
+
   return (
     <div className="max-w-[25%] basis-[25%] px-1">
       <div className="p-2">
         <Link
           href={link}
           className="bg-[#E1DDD4] flex items-end justify-center h-[350px] border border-[#f0eeee] relative"
+          onClick={handleCloseSearch}
         >
           <Image
             src="https://drive.usercontent.google.com/download?id=117HUkJcGQRGQv0Y1fwpP79GdTYvsXAAl&export=view&authuser=0"
@@ -27,7 +43,11 @@ export default function ProductItem({ product, link }: ProductProps) {
           </div>
         </Link>
         <div className="font-medium mt-2 underline">{product.category}</div>
-        <Link href={link} className="text-lg font-medium">
+        <Link
+          href={link}
+          className="text-lg font-medium"
+          onClick={handleCloseSearch}
+        >
           {product.name}
         </Link>
         <div className="flex gap-3">
