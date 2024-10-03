@@ -60,7 +60,7 @@ export default function MainHeader() {
           </Link>
           <div className="flex gap-8">
             <Link href={"/adidas"} className="font-medium">
-              Adidas
+              AdidasMinh
             </Link>
             <Link href={"/adidas"} className="font-medium">
               Nike
