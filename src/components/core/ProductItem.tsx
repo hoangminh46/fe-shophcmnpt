@@ -8,12 +8,14 @@ interface ProductProps {
   product: any;
   link: any;
   closeSearch?: any;
+  slide?: any;
 }
 
 export default function ProductItem({
   product,
   link,
   closeSearch,
+  slide,
 }: ProductProps) {
   const dispatch = useAppDispatch();
 
@@ -24,7 +26,7 @@ export default function ProductItem({
   }
 
   return (
-    <div className="max-w-[25%] basis-[25%] px-1">
+    <div className={` ${!slide ? "max-w-[25%] basis-[25%] px-1" : ""}`}>
       <div className="p-2">
         <Link
           href={link}

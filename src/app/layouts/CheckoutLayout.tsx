@@ -10,7 +10,7 @@ export default function CheckoutLayout({
   return (
     <Fragment>
       <CheckoutHeader />
-      <div className="pt-[71px]">{children}</div>
+      <div className="container">{children}</div>
       <Footer />
     </Fragment>
   );

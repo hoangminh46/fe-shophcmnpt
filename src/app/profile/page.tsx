@@ -12,8 +12,10 @@ import { useEffect } from "react";
 
 export default function Profile() {
   const user = useAppSelector((state) => state.auth.user);
+  const userToken = useAppSelector((state) => state.auth.userToken);
   const dispatch = useAppDispatch();
   const router = useRouter();
+
   useEffect(() => {
     dispatch(fetchCity());
     dispatch(fetchUser());
@@ -24,6 +26,13 @@ export default function Profile() {
       dispatch(fetchCart(user?.id));
     }
   }, [user]);
+
+  useEffect(() => {
+    if (!userToken) {
+      dispatch(logout());
+      router.push("/auth");
+    }
+  }, [userToken]);
 
   function handleLogout() {
     localStorage.removeItem("token");

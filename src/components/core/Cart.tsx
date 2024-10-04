@@ -4,9 +4,11 @@ import XIcon from "@/icons/XIcon";
 import { toggleCart } from "@/lib/features/appSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function Cart({ cartProducts }: { cartProducts: any }) {
   const cartState = useAppSelector((state) => state.app.toggleCart);
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const toggleActive = () => {
     dispatch(toggleCart());
@@ -93,7 +95,16 @@ export default function Cart({ cartProducts }: { cartProducts: any }) {
             <div>Thành tiền</div>
             <div className="font-semibold">{cartProducts?.total || 0}</div>
           </div>
-          <Button className="block w-full">Tiếp tục mua sắm</Button>
+          {cartProducts?.total ? (
+            <Button
+              className="block w-full"
+              onClick={() => router.push("/checkout")}
+            >
+              Thanh toán
+            </Button>
+          ) : (
+            <Button className="block w-full">Tiếp tục mua sắm</Button>
+          )}
         </div>
       </div>
     </div>

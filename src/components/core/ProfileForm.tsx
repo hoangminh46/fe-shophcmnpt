@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { fetchUser, updateUsers } from "@/lib/features/authSlice";
+import { fetchCity } from "@/lib/features/appSlice";
 
 const profileSchema = z.object({
   email: z
@@ -74,7 +75,7 @@ export default function ProfileForm() {
   });
 
   function handleCityChange(value: any) {
-    const selectedCity = cityData.find((city: any) => city.Id === value);
+    const selectedCity = cityData?.find((city: any) => city.Id === value);
     setCitis(selectedCity);
     setDistricts(selectedCity?.Districts);
     setWards([]);
@@ -90,7 +91,7 @@ export default function ProfileForm() {
   };
 
   function handleLoadCity() {
-    const selectedCity = cityData.find(
+    const selectedCity = cityData?.find(
       (city: any) => city.Id === user?.address?.city?.id
     );
 
