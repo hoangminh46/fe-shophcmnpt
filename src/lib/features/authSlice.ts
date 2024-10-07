@@ -1,6 +1,8 @@
 import { getCartByUserId } from "@/services/appService";
 import {
   changePass,
+  deleteProduct,
+  editQuantityProduct,
   getUser,
   login,
   register,
@@ -8,7 +10,6 @@ import {
   updateUser,
 } from "@/services/authService";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { toast } from "sonner";
 
 interface AuthState {
@@ -138,6 +139,34 @@ export const fetchCart = createAsyncThunk(
   }
 );
 
+export const deleteProductFormCart = createAsyncThunk(
+  "auth/deleteProductFormCart",
+  async (infoDelete: any, { rejectWithValue }) => {
+    try {
+      const data = await deleteProduct(infoDelete);
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Thao tác thất bại"
+      );
+    }
+  }
+);
+
+export const changeQuantityProduct = createAsyncThunk(
+  "auth/changeQuantityProduct",
+  async (infoChange: any, { rejectWithValue }) => {
+    try {
+      const data = await editQuantityProduct(infoChange);
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Thao tác thất bại"
+      );
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -206,6 +235,12 @@ export const authSlice = createSlice({
         state.userToken = null;
       })
       .addCase(fetchCart.fulfilled, (state, action) => {
+        state.cart = action.payload;
+      })
+      .addCase(deleteProductFormCart.fulfilled, (state, action) => {
+        state.cart = action.payload;
+      })
+      .addCase(changeQuantityProduct.fulfilled, (state, action) => {
         state.cart = action.payload;
       });
   },

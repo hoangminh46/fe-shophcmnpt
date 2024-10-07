@@ -87,3 +87,26 @@ export const changePass = async (data: any) => {
     }
   }
 };
+
+export const deleteProduct = async (data: any) => {
+  try {
+    const response = await axiosInstance.delete(
+      `/carts/${data.cartID}/items/${data.productID}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const editQuantityProduct = async (data: any) => {
+  try {
+    const response = await axiosInstance.put(
+      `/carts/${data.cartID}/items/${data.productID}`,
+      { quantity: data.quantity }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

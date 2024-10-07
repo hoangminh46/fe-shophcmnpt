@@ -3,6 +3,7 @@ import { toggleSearch } from "@/lib/features/appSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import Image from "next/image";
 import Link from "next/link";
+import { NumericFormat } from "react-number-format";
 
 interface ProductProps {
   product: any;
@@ -30,11 +31,11 @@ export default function ProductItem({
       <div className="p-2">
         <Link
           href={link}
-          className="bg-[#E1DDD4] flex items-end justify-center h-[350px] border border-[#f0eeee] relative"
+          className="bg-[#ffffff] flex items-end justify-center h-[350px] border border-[#f0eeee] shadow-sm relative"
           onClick={handleCloseSearch}
         >
           <Image
-            src="https://drive.usercontent.google.com/download?id=117HUkJcGQRGQv0Y1fwpP79GdTYvsXAAl&export=view&authuser=0"
+            src={product?.thumbnail}
             alt="Giày Nike Air Jordan 4 Retro"
             width={500}
             height={500}
@@ -54,10 +55,24 @@ export default function ProductItem({
         </Link>
         <div className="flex gap-3">
           <div className="text-lg font-medium text-[#C72020]">
-            {product.salePrice}đ
+            <NumericFormat
+              type="text"
+              value={product?.salePrice}
+              displayType={"text"}
+              thousandsGroupStyle="thousand"
+              thousandSeparator=","
+            />
+            đ
           </div>
           <div className="text-lg line-through text-[#757575]">
-            {product.oldPrice}đ
+            <NumericFormat
+              type="text"
+              value={product?.oldPrice}
+              displayType={"text"}
+              thousandsGroupStyle="thousand"
+              thousandSeparator=","
+            />
+            đ
           </div>
         </div>
       </div>

@@ -17,8 +17,7 @@ import { useRouter } from "next/navigation";
 import Cart from "@/components/core/Cart";
 import { toggleCart, toggleSearch } from "@/lib/features/appSlice";
 import Search from "@/components/core/Search";
-import { useEffect, useState } from "react";
-import { getCartByUserId } from "@/services/appService";
+import { useEffect } from "react";
 
 export default function MainHeader() {
   const router = useRouter();
@@ -30,7 +29,7 @@ export default function MainHeader() {
   function handleLogout() {
     localStorage.removeItem("token");
     dispatch(logout());
-    dispatch(toggleCart());
+    dispatch(toggleCart(false));
     router.push("/auth");
   }
 
@@ -60,7 +59,7 @@ export default function MainHeader() {
           </Link>
           <div className="flex gap-8">
             <Link href={"/adidas"} className="font-medium">
-              AdidasMinh
+              Adidas
             </Link>
             <Link href={"/adidas"} className="font-medium">
               Nike
@@ -118,7 +117,10 @@ export default function MainHeader() {
             </Link>
           )}
           {userAuth ? (
-            <div className="relative" onClick={() => dispatch(toggleCart())}>
+            <div
+              className="relative"
+              onClick={() => dispatch(toggleCart(null))}
+            >
               <CartIcon />
               <span className="absolute text-xs top-0 -right-1 bg-black text-white px-1 text-center rounded-full">
                 {cart?.cartQuantity}

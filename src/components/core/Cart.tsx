@@ -2,22 +2,55 @@ import InputCart from "@/components/core/InputCart";
 import { Button } from "@/components/ui/button";
 import XIcon from "@/icons/XIcon";
 import { toggleCart } from "@/lib/features/appSlice";
+import {
+  changeQuantityProduct,
+  deleteProductFormCart,
+} from "@/lib/features/authSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { NumericFormat } from "react-number-format";
+import { toast } from "sonner";
 
 export default function Cart({ cartProducts }: { cartProducts: any }) {
   const cartState = useAppSelector((state) => state.app.toggleCart);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const toggleActive = () => {
-    dispatch(toggleCart());
+    dispatch(toggleCart(null));
   };
 
   function handleClickCart(e: any) {
     if (e.currentTarget === e.target) {
-      dispatch(toggleCart());
+      dispatch(toggleCart(true));
     }
+  }
+
+  function handleDeleteProduct(productID: any, productName: any) {
+    const dataDelete = {
+      cartID: cartProducts?.cartID,
+      productID,
+    };
+    dispatch(deleteProductFormCart(dataDelete));
+    toast.success(`Xoá thành công ${productName}`);
+  }
+
+  function handleMinus(productID: any, productQuantity: any) {
+    const dataEdit = {
+      cartID: cartProducts?.cartID,
+      productID,
+      quantity: Number(productQuantity - 1),
+    };
+    dispatch(changeQuantityProduct(dataEdit));
+  }
+
+  function handlePlus(productID: any, productQuantity: any) {
+    const dataEdit = {
+      cartID: cartProducts?.cartID,
+      productID,
+      quantity: Number(productQuantity + 1),
+    };
+    dispatch(changeQuantityProduct(dataEdit));
   }
 
   return (
@@ -51,7 +84,7 @@ export default function Cart({ cartProducts }: { cartProducts: any }) {
           ) : (
             cartProducts?.items?.map((item: any) => (
               <div key={item?.id} className="flex gap-x-3 p-5 border-b-1">
-                <div className="bg-[#E1DDD4] max-w-[180px] p-3 flex items-end">
+                <div className="bg-[#ffffff] max-w-[180px] p-3 flex items-end border-[#f0eeee] shadow-sm">
                   <Image
                     src={item?.thumbnail}
                     alt=""
@@ -63,19 +96,40 @@ export default function Cart({ cartProducts }: { cartProducts: any }) {
                 <div className="min-w-[300px]">
                   <div className="font-semibold flex justify-between items-center">
                     <div>{item?.name}</div>
-                    <div className="cursor-pointer">
+                    <div
+                      className="cursor-pointer"
+                      onClick={() => handleDeleteProduct(item?.id, item?.name)}
+                    >
                       <XIcon />
                     </div>
                   </div>
                   <div className="flex gap-x-2">
                     <div className="text-[#c50c0c] font-medium">
-                      {item?.salePrice}
+                      <NumericFormat
+                        type="text"
+                        value={item?.salePrice}
+                        displayType={"text"}
+                        thousandsGroupStyle="thousand"
+                        thousandSeparator=","
+                      />
                     </div>
-                    <div className="line-through">{item?.oldPrice}</div>
+                    <div className="line-through">
+                      <NumericFormat
+                        type="text"
+                        value={item?.oldPrice}
+                        displayType={"text"}
+                        thousandsGroupStyle="thousand"
+                        thousandSeparator=","
+                      />
+                    </div>
                   </div>
                   <div className="flex items-center">
                     <div className="min-w-[80px]">Số lượng:</div>
-                    <InputCart inputValue={item?.quantity} />
+                    <InputCart
+                      inputValue={item?.quantity}
+                      clickMinus={() => handleMinus(item?.id, item?.quantity)}
+                      clickAdd={() => handlePlus(item?.id, item?.quantity)}
+                    />
                   </div>
                   <div className="flex">
                     <div className="min-w-[80px]">Size:</div>
@@ -83,7 +137,13 @@ export default function Cart({ cartProducts }: { cartProducts: any }) {
                   </div>
                   <div className="flex">
                     <div className="min-w-[80px]">Tổng:</div>
-                    <div>{item?.subTotal}</div>
+                    <NumericFormat
+                      type="text"
+                      value={item?.subTotal}
+                      displayType={"text"}
+                      thousandsGroupStyle="thousand"
+                      thousandSeparator=","
+                    />
                   </div>
                 </div>
               </div>
@@ -93,7 +153,17 @@ export default function Cart({ cartProducts }: { cartProducts: any }) {
         <div className="p-5 border-t-1 ">
           <div className="flex justify-between mb-3">
             <div>Thành tiền</div>
-            <div className="font-semibold">{cartProducts?.total || 0}</div>
+            <div className="font-semibold">
+              {
+                <NumericFormat
+                  type="text"
+                  value={cartProducts?.total}
+                  displayType={"text"}
+                  thousandsGroupStyle="thousand"
+                  thousandSeparator=","
+                />
+              }
+            </div>
           </div>
           {cartProducts?.total ? (
             <Button

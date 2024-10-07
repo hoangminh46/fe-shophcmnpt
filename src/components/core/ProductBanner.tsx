@@ -25,7 +25,7 @@ export default function ProductBanner() {
       <CarouselContent>
         {products.map((product: any) => (
           <CarouselItem
-            className="text-center bg-black text-white py-1 text-sm font-medium basis-1/4"
+            className="py-1 text-sm font-medium basis-1/4"
             key={product.id}
           >
             <ProductItem

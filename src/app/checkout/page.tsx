@@ -2,7 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
+import { NumericFormat } from "react-number-format";
 import {
   Form,
   FormControl,
@@ -62,6 +62,7 @@ export default function Checkout() {
   const [citis, setCitis] = useState<City>({} as City);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
@@ -121,6 +122,7 @@ export default function Checkout() {
 
   async function onSubmit(values: z.infer<typeof checkoutSchema>) {
     console.log("-----value", values);
+    setIsOpenModal(true);
   }
 
   return (
@@ -353,7 +355,7 @@ export default function Checkout() {
                 key={item?.id}
                 className="flex gap-x-3 py-5 border-b-1 max-w-[380px]"
               >
-                <div className="bg-[#E1DDD4] max-w-[180px] min-w-[180px] p-3 flex items-end">
+                <div className="bg-[#ffffff] max-w-[180px] min-w-[180px] p-3 flex items-end border-[#f0eeee] shadow-sm">
                   <Image
                     src={item?.thumbnail}
                     alt=""
@@ -364,13 +366,27 @@ export default function Checkout() {
                 </div>
                 <div>
                   <div className="font-semibold flex justify-between items-center">
-                    <div>{item?.name}</div>
+                    <div className="w-[180px] truncate">{item?.name}</div>
                   </div>
                   <div className="flex gap-x-2">
                     <div className="text-[#c50c0c] font-medium">
-                      {item?.salePrice}
+                      <NumericFormat
+                        type="text"
+                        value={item?.salePrice}
+                        displayType={"text"}
+                        thousandsGroupStyle="thousand"
+                        thousandSeparator=","
+                      />
                     </div>
-                    <div className="line-through">{item?.oldPrice}</div>
+                    <div className="line-through">
+                      <NumericFormat
+                        type="text"
+                        value={item?.oldPrice}
+                        displayType={"text"}
+                        thousandsGroupStyle="thousand"
+                        thousandSeparator=","
+                      />
+                    </div>
                   </div>
                   <div className="flex items-center">
                     <div className="min-w-[80px]">
@@ -383,7 +399,15 @@ export default function Checkout() {
                   </div>
                   <div className="flex">
                     <div className="min-w-[80px]">Tổng:</div>
-                    <div>{item?.subTotal}</div>
+                    <div>
+                      <NumericFormat
+                        type="text"
+                        value={item?.subTotal}
+                        displayType={"text"}
+                        thousandsGroupStyle="thousand"
+                        thousandSeparator=","
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -392,7 +416,15 @@ export default function Checkout() {
           <div className="py-4">
             <div className="flex justify-between text-xl">
               <p>Tổng đơn</p>
-              <p className="font-semibold text-[22px]">{cartProducts?.total}</p>
+              <p className="font-semibold text-[22px]">
+                <NumericFormat
+                  type="text"
+                  value={cartProducts?.total}
+                  displayType={"text"}
+                  thousandsGroupStyle="thousand"
+                  thousandSeparator=","
+                />
+              </p>
             </div>
             <div className="flex justify-between mt-4 text-xl">
               <p>Ưu đãi voucher / thành viên</p>
@@ -404,7 +436,15 @@ export default function Checkout() {
             </div>
             <div className="flex justify-between mt-4 text-2xl border-t py-4 font-semibold">
               <p>THÀNH TIỀN</p>
-              <p>{cartProducts?.total}</p>
+              <p>
+                <NumericFormat
+                  type="text"
+                  value={cartProducts?.total}
+                  displayType={"text"}
+                  thousandsGroupStyle="thousand"
+                  thousandSeparator=","
+                />
+              </p>
             </div>
           </div>
           <Button
@@ -416,6 +456,22 @@ export default function Checkout() {
           </Button>
         </div>
       </div>
+      {isOpenModal && (
+        <div className="absolute inset-0 bg-white flex flex-col items-center">
+          <Image
+            src="/images/payment/checked.png"
+            alt="checked"
+            loading="lazy"
+            width={120}
+            height={120}
+            quality={100}
+            className="mt-10"
+          />
+          <div className="mt-6 text-[32px] font-medium">
+            Đặt hàng thành công
+          </div>
+        </div>
+      )}
     </CheckoutLayout>
   );
 }

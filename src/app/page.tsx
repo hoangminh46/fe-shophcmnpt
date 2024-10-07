@@ -31,7 +31,7 @@ export default function Home() {
     <MainLayout>
       <PromotionBanner />
       <HomeBanner />
-      <div className="container">
+      <div className="container mb-10">
         <div className="flex items-center my-10">
           <div className="flex items-center">
             <p className="font-semibold text-xl">HÀNG MỚI VỀ</p>

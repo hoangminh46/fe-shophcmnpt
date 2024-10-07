@@ -13,6 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 import { addProduct } from "@/services/appService";
 import { fetchCart } from "@/lib/features/authSlice";
+import { NumericFormat } from "react-number-format";
 
 export default function ProductDetail() {
   const product = useAppSelector((state) => state.app.product);
@@ -86,7 +87,7 @@ export default function ProductDetail() {
     <MainLayout>
       <div className="container mt-12 w-[1240px] mx-auto mb-28">
         <div className="flex gap-10 flex-wrap justify-between">
-          <div className="bg-[#E1DDD4] flex items-end justify-center w-[45%] h-[450px] border border-[#f0eeee] relative">
+          <div className="bg-[#ffffff] flex items-end justify-center w-[45%] h-[450px] border border-[#f0eeee] shadow-sm relative">
             <Image
               src={product?.thumbnail}
               width={500}
@@ -102,9 +103,23 @@ export default function ProductDetail() {
             <p className="text-[40px] font-semibold mb-2">{product?.name}</p>
             <p className="text-[32px] font-medium mb-2">{product?.category}</p>
             <div className="flex gap-3">
-              <p className="text-[36px] font-medium">{product?.salePrice}</p>
+              <p className="text-[36px] font-medium">
+                <NumericFormat
+                  type="text"
+                  value={product?.salePrice}
+                  displayType={"text"}
+                  thousandsGroupStyle="thousand"
+                  thousandSeparator=","
+                />
+              </p>
               <p className="text-[36px] font-medium line-through text-[#757575]">
-                {product?.oldPrice}
+                <NumericFormat
+                  type="text"
+                  value={product?.oldPrice}
+                  displayType={"text"}
+                  thousandsGroupStyle="thousand"
+                  thousandSeparator=","
+                />
               </p>
             </div>
             <div className="mt-4">

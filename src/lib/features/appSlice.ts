@@ -4,7 +4,7 @@ import axios from "axios";
 
 interface AppState {
   cityData: any | null;
-  toggleCart: any | null;
+  toggleCart?: any | null;
   toggleSearch: any | null;
   products: any | null;
   product: any | null;
@@ -57,8 +57,12 @@ export const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    toggleCart: (state) => {
-      state.toggleCart = !state.toggleCart;
+    toggleCart: (state, action) => {
+      if (action.payload === null) {
+        state.toggleCart = !state.toggleCart;
+      } else {
+        state.toggleCart = action.payload;
+      }
     },
     toggleSearch: (state) => {
       state.toggleSearch = !state.toggleSearch;
