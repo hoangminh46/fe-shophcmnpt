@@ -1,0 +1,39 @@
+stages:
+  # - lint
+  - deploy
+
+cache:
+  paths:
+    - node_modules/
+
+# lint:
+#   image: node:20.17.0
+#   tags:
+#     - runner-initiative-room
+#   stage: lint
+#   script:
+#     - yarn install
+#     - yarn lint
+#   only:
+#     - merge_requests
+
+deploy-dev:
+  image: node:20.17.0
+  tags:
+    - runner-initiative-room
+  stage: deploy
+  script:
+    - apt-get update && apt-get install -y rsync
+    - mkdir -p ~/.ssh
+    - echo "$DEV_WEB_ENV" > .env
+    - ssh-keyscan -H $DEV_SERVER_ADDRESS  >> ~/.ssh/known_hosts
+    - echo "$DEV_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - npm install 
+    - npm run build
+    - rsync --progress -avzh --exclude='.git' -e "ssh -i ~/.ssh/id_rsa " --rsync-path="sudo rsync" . $DEV_USER_IP_ADDRESS:/home/ec2-user/idp/fashion-ecommerce
+    - ssh -i ~/.ssh/id_rsa $DEV_USER_IP_ADDRESS "
+      cd /home/ec2-user/idp/fashion-ecommerce
+      && pm2 restart my-next-app "
+  only:
+    - develop
