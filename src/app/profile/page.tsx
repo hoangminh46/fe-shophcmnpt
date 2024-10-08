@@ -4,7 +4,12 @@ import ChangePassForm from "@/components/core/ChangePassForm";
 import ProfileForm from "@/components/core/ProfileForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { fetchCity } from "@/lib/features/appSlice";
-import { fetchCart, fetchUser, logout } from "@/lib/features/authSlice";
+import {
+  fetchCart,
+  fetchOrder,
+  fetchUser,
+  logout,
+} from "@/lib/features/authSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -12,7 +17,9 @@ import { useEffect } from "react";
 
 export default function Profile() {
   const user = useAppSelector((state) => state.auth.user);
+  const orders = useAppSelector((state) => state.auth.order);
   const userToken = useAppSelector((state) => state.auth.userToken);
+  const cityList = useAppSelector((state) => state.app.cityData);
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -24,6 +31,7 @@ export default function Profile() {
   useEffect(() => {
     if (user) {
       dispatch(fetchCart(user?.id));
+      dispatch(fetchOrder(user?.id));
     }
   }, [user]);
 
@@ -105,7 +113,22 @@ export default function Profile() {
             <ProfileForm />
           </TabsContent>
           <TabsContent value="history" className="w-3/4">
-            Hisotry
+            <h3 className="font-semibold text-lg mb-5">Lịch sử mua hàng</h3>
+            {orders?.items?.map((order: any) => (
+              <div key={order?.id} className="shadow-sm border p-4 mb-8">
+                <div>Mã đơn hàng: {order?.id}</div>
+                <div>
+                  Địa chỉ nhận hàng: {order?.detailAddress}, {order?.district},{" "}
+                  {order?.ward}, {order?.city}
+                </div>
+                <div>Số điện thoại: {order?.phoneNumber}</div>
+                <div>
+                  {order.items.map((item: any) => (
+                    <div key={item?.id}>{item?.name}</div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </TabsContent>
           <TabsContent value="change-pass" className="w-3/4">
             <ChangePassForm />

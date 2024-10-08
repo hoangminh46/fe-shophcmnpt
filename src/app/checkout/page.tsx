@@ -27,6 +27,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import CheckoutLayout from "@/app/layouts/CheckoutLayout";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
+import { addOrder } from "@/services/appService";
 
 const checkoutSchema = z.object({
   fullName: z.string().min(1, "Họ tên còn trống, vui lòng nhập đầy đủ"),
@@ -121,7 +123,11 @@ export default function Checkout() {
   }
 
   async function onSubmit(values: z.infer<typeof checkoutSchema>) {
-    console.log("-----value", values);
+    const data = {
+      ...values,
+      ...cartProducts,
+    };
+    addOrder(data);
     setIsOpenModal(true);
   }
 
@@ -465,10 +471,23 @@ export default function Checkout() {
             width={120}
             height={120}
             quality={100}
-            className="mt-10"
+            className="mt-20"
           />
-          <div className="mt-6 text-[32px] font-medium">
-            Đặt hàng thành công
+          <div className="mt-6 text-[30px] font-medium">
+            Đơn hàng của bạn đã được xác nhận!
+          </div>
+          <div className="mt-6 text-[20px] text-center">
+            Cảm ơn bạn đã mua hàng. Đơn hàng sẽ được giao trong vòng 3-5 ngày
+            làm việc. <br /> Bạn có thể kiểm tra trạng thái đơn hàng trong mục
+            <strong> Lịch sử Mua Hàng </strong> của tài khoản.
+          </div>
+          <div className="flex gap-4 mt-10">
+            <Button>
+              <Link href={"/profile"}>Kiểm tra đơn hàng</Link>
+            </Button>
+            <Button>
+              <Link href={"/"}>Về trang chủ</Link>
+            </Button>
           </div>
         </div>
       )}

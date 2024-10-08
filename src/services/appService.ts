@@ -35,3 +35,21 @@ export const addProduct = async (data: any) => {
     throw error;
   }
 };
+
+export const getOrderByUserId = async (id: string) => {
+  try {
+    const response = await axiosInstance.get(`orders/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const addOrder = async (data: any) => {
+  try {
+    const response = await axiosInstance.post(`/orders/${data.userID}`, data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

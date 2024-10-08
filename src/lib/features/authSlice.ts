@@ -1,4 +1,4 @@
-import { getCartByUserId } from "@/services/appService";
+import { getCartByUserId, getOrderByUserId } from "@/services/appService";
 import {
   changePass,
   deleteProduct,
@@ -19,6 +19,7 @@ interface AuthState {
   message: string | null;
   user: any | null;
   cart: any | null;
+  order: any | null;
 }
 
 const initialState: AuthState = {
@@ -28,6 +29,7 @@ const initialState: AuthState = {
   message: null,
   user: null,
   cart: null,
+  order: null,
 };
 
 export const loginUser = createAsyncThunk(
@@ -153,6 +155,20 @@ export const deleteProductFormCart = createAsyncThunk(
   }
 );
 
+export const fetchOrder = createAsyncThunk(
+  "auth/fetchOrder",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const data = await getOrderByUserId(id);
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Thao tác thất bại"
+      );
+    }
+  }
+);
+
 export const changeQuantityProduct = createAsyncThunk(
   "auth/changeQuantityProduct",
   async (infoChange: any, { rejectWithValue }) => {
@@ -242,6 +258,9 @@ export const authSlice = createSlice({
       })
       .addCase(changeQuantityProduct.fulfilled, (state, action) => {
         state.cart = action.payload;
+      })
+      .addCase(fetchOrder.fulfilled, (state, action) => {
+        state.order = action.payload;
       });
   },
 });
