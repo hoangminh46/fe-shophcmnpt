@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { NumericFormat } from "react-number-format";
 
 export default function Profile() {
   const user = useAppSelector((state) => state.auth.user);
@@ -46,6 +47,32 @@ export default function Profile() {
     localStorage.removeItem("token");
     dispatch(logout());
     router.push("/auth");
+  }
+
+  function handleGetAddress(
+    cityId: any,
+    districtId: any,
+    wardId: any,
+    type: any
+  ) {
+    const city = cityList?.find((item: any) => {
+      return item.Id === cityId;
+    });
+    const district = city?.Districts?.find((item: any) => {
+      return item.Id === districtId;
+    });
+    const ward = district?.Wards?.find((item: any) => {
+      return item.Id === wardId;
+    });
+    if (type === 1) {
+      return city?.Name;
+    }
+    if (type === 2) {
+      return district?.Name;
+    }
+    if (type === 3) {
+      return ward?.Name;
+    }
   }
 
   return (
@@ -118,14 +145,87 @@ export default function Profile() {
               <div key={order?.id} className="shadow-sm border p-4 mb-8">
                 <div>Mã đơn hàng: {order?.id}</div>
                 <div>
-                  Địa chỉ nhận hàng: {order?.detailAddress}, {order?.district},{" "}
-                  {order?.ward}, {order?.city}
+                  Địa chỉ nhận hàng: {order?.detailAddress},{" "}
+                  {handleGetAddress(
+                    order?.city,
+                    order?.district,
+                    order?.ward,
+                    3
+                  )}
+                  ,{" "}
+                  {handleGetAddress(
+                    order?.city,
+                    order?.district,
+                    order?.ward,
+                    2
+                  )}
+                  ,
+                  {handleGetAddress(
+                    order?.city,
+                    order?.district,
+                    order?.ward,
+                    1
+                  )}
                 </div>
                 <div>Số điện thoại: {order?.phoneNumber}</div>
-                <div>
+                <div>Sản phẩm:</div>
+                <div className="mt-4 max-h-[266px] overflow-auto">
                   {order.items.map((item: any) => (
-                    <div key={item?.id}>{item?.name}</div>
+                    <div key={item?.id} className="border-t py-4 flex gap-4">
+                      <div className="border w-[100px] h-[100px] px-2 py-4 flex flex-col justify-end">
+                        <Image
+                          src={item?.thumbnail}
+                          width={100}
+                          height={100}
+                          quality={100}
+                          alt="product"
+                          className="w-full"
+                        />
+                      </div>
+                      <div className="w-full">
+                        <div className="font-semibold">{item?.name}</div>
+                        <div className="flex justify-between">
+                          <div>Phân loại hàng: Size {item?.size}</div>
+                          <div className="flex gap-2">
+                            <div className="text-sm line-through text-[#757575]">
+                              <NumericFormat
+                                type="text"
+                                value={item?.oldPrice}
+                                displayType={"text"}
+                                thousandsGroupStyle="thousand"
+                                thousandSeparator=","
+                              />
+                              đ
+                            </div>
+                            <div className="text-sm text-[#c50c0c]">
+                              <NumericFormat
+                                type="text"
+                                value={item?.salePrice}
+                                displayType={"text"}
+                                thousandsGroupStyle="thousand"
+                                thousandSeparator=","
+                              />
+                              đ
+                            </div>
+                          </div>
+                        </div>
+                        <div>Số lượng: {item?.quantity}</div>
+                      </div>
+                    </div>
                   ))}
+                </div>
+                <div className="text-right py-4 font-medium text-lg">
+                  Thành tiền:{" "}
+                  <span className="text-[#c50c0c]">
+                    <NumericFormat
+                      type="text"
+                      value={order?.total}
+                      displayType={"text"}
+                      thousandsGroupStyle="thousand"
+                      thousandSeparator=","
+                    />
+                    đ
+                  </span>
                 </div>
               </div>
             ))}

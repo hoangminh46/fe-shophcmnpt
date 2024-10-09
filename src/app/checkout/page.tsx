@@ -482,12 +482,12 @@ export default function Checkout() {
             <strong> Lịch sử Mua Hàng </strong> của tài khoản.
           </div>
           <div className="flex gap-4 mt-10">
-            <Button>
-              <Link href={"/profile"}>Kiểm tra đơn hàng</Link>
-            </Button>
-            <Button>
-              <Link href={"/"}>Về trang chủ</Link>
-            </Button>
+            <Link href={"/profile"}>
+              <Button>Kiểm tra đơn hàng</Button>
+            </Link>
+            <Link href={"/"}>
+              <Button>Về trang chủ</Button>
+            </Link>
           </div>
         </div>
       )}

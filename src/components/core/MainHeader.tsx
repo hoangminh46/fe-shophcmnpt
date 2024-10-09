@@ -47,27 +47,29 @@ export default function MainHeader() {
     <header className="border-b-1 h-4.5 fixed top-0 left-0 right-0 z-50 bg-white mb-[71px] w-full max-w-full">
       <div className="container flex items-center h-full justify-between">
         <div className="flex items-center gap-10">
-          <Link href={"/"}>
-            <Image
-              src="/images/logo.webp"
-              alt="Logo"
-              loading="lazy"
-              width={150}
-              height={60}
-              quality={70}
-            />
-          </Link>
+          <div onClick={() => dispatch(toggleCart(false))}>
+            <Link href={"/"}>
+              <Image
+                src="/images/logo.webp"
+                alt="Logo"
+                loading="lazy"
+                width={150}
+                height={60}
+                quality={70}
+              />
+            </Link>
+          </div>
           <div className="flex gap-8">
-            <Link href={"/adidas"} className="font-medium">
+            <Link href={"/"} className="font-medium">
               Adidas
             </Link>
-            <Link href={"/adidas"} className="font-medium">
+            <Link href={"/"} className="font-medium">
               Nike
             </Link>
-            <Link href={"/adidas"} className="font-medium">
+            <Link href={"/"} className="font-medium">
               New Balance
             </Link>
-            <Link href={"/adidas"} className="font-medium">
+            <Link href={"/"} className="font-medium">
               MLB
             </Link>
             <DropdownMenu>

@@ -26,6 +26,7 @@ export default function ProductDetail() {
   const [error, setError] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [size, setSize] = useState(null);
+  const [showDesc, setShowDesc] = useState(false);
 
   function handlePlus() {
     if (quantity < 100) {
@@ -158,7 +159,102 @@ export default function ProductDetail() {
             </Button>
           </div>
         </div>
-        <div></div>
+        <div className="w-[50%] flex flex-col items-center">
+          <div
+            className={`text-justify mt-10 ${
+              !showDesc && "max-h-[480px] overflow-hidden"
+            }`}
+          >
+            <h3 className="font-semibold text-lg mb-4">CHI TIẾT SẢN PHẨM</h3>
+            <h4>Tên sản phẩm: {product?.name}</h4>
+            <p>---</p>
+            <h4 className="font-semibold my-2">✨ THÔNG TIN SẢN PHẨM</h4>
+            <div>
+              <p>
+                Kích cỡ:{" "}
+                {product?.size?.map((item: any) => (
+                  <span key={item}>{item} </span>
+                ))}
+              </p>
+              <p>Chất liệu: vải bamboo (đi thoáng mát và đế không nhăn)</p>
+              <p>Xuất xứ: Việt Nam</p>
+            </div>
+            <h4 className="font-semibold my-2">✨ QUI ĐỊNH ĐỔI HÀNG KHI MUA</h4>
+            <div>
+              <p>
+                - Mỗi hoá đơn chỉ được đổi một lần. Bạn có thể đổi hàng trong 14
+                ngày kể từ ngày mua hàng
+              </p>
+              <p>
+                - Mặt hàng phải ở trong tình trạng ban đầu, còn nguyên tem mác,
+                chưa qua sử dụng, chưa giặt giũ và có hoá đơn tương ứng
+              </p>
+              <p>
+                - Bạn vui lòng giữ lại hoá đơn để được đổi hàng. Bạn có thể xuất
+                trình hóa đơn mua hàng dưới dạng giấy in hoặc định dạng điện tử
+                trên điện thoại di động của bạn
+              </p>
+              <p>
+                - AUTHENTIC SHOES không áp dụng trả hàng - hoàn tiền dưới mọi
+                hình thức (cả trong trường hợp hoá đơn đã mua có giá trị cao hơn
+                hoá đơn đổi)
+              </p>
+              <p>
+                - Với các sản phẩm giảm dưới 30%, AUTHENTIC SHOES sẽ hỗ trợ đổi
+                hàng và số lượng sản phẩm đổi nhiều hơn sản phẩm trả, miễn tổng
+                hoá đơn đổi bằng hoặc lớn hơn. Trong trường hợp hoá đơn đổi cao
+                hơn, bạn vui lòng bù thêm phần chênh lệch.
+              </p>
+              <p>
+                - Với các sản phẩm giảm dưới 30%, AUTHENTIC SHOES sẽ hỗ trợ đổi
+                hàng và số lượng sản phẩm đổi nhiều hơn sản phẩm trả, miễn tổng
+                hoá đơn đổi bằng hoặc lớn hơn. Trong trường hợp hoá đơn đổi cao
+                hơn, bạn vui lòng bù thêm phần chênh lệch.
+              </p>
+              <p>
+                - Với các sản phẩm giảm trên 30% và sản phẩm phụ kiện, AUTHENTIC
+                SHOES sẽ không hỗ trợ đổi hàng
+              </p>
+              <p>- Quà tặng không được đổi hoặc qui ra tiền, voucher.</p>
+            </div>
+            <h4 className="font-semibold my-2">
+              ✨ ĐẶC QUYỀN KHI MUA ĐỒ CỦA AUTHENTIC SHOES:
+            </h4>
+            <div>
+              <p>
+                - Sản phẩm đúng với hình ảnh, thậm chí đẹp hơn trên hình, cả nam
+                và nữ sử dụng đều phù hợp.
+              </p>
+              <p>
+                - Bao bì nylon trắng đục có thể thấy được sản phẩm bên trong,
+                tái chế chống mưa và hạn chế các tác động vật lý
+              </p>
+              <p>
+                - Thiệp cám ơn, Card shop, hoá đơn mua hàng tiêu chuẩn chuyên
+                nghiệp
+              </p>
+            </div>
+            <h4 className="font-semibold my-2">
+              ✨ NHỮNG ĐIỀU LƯU Ý KHI BẢO QUẢN GIÀY:
+            </h4>
+            <div>
+              <p>
+                - Không để giày ở các nơi ẩm và nên cất ngay sau khi sử dụng để
+                tránh ẩm mốc
+              </p>
+              <p>
+                - Không đổ trực tiếp bột giặt lên quần giày khi giặt để tránh áo
+                bị phai và loang màu
+              </p>
+            </div>
+          </div>
+          <Button
+            onClick={() => setShowDesc((prev) => !prev)}
+            className="mt-4 items-center w-[120px] mx-auto"
+          >
+            {showDesc ? "Rút gọn" : "Xem thêm"}
+          </Button>
+        </div>
       </div>
     </MainLayout>
   );

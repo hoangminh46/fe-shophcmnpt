@@ -168,7 +168,10 @@ export default function Cart({ cartProducts }: { cartProducts: any }) {
           {cartProducts?.total ? (
             <Button
               className="block w-full"
-              onClick={() => router.push("/checkout")}
+              onClick={() => {
+                router.push("/checkout");
+                dispatch(toggleCart(false));
+              }}
             >
               Thanh toán
             </Button>
