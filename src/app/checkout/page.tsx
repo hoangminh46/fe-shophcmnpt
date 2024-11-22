@@ -433,7 +433,7 @@ export default function Checkout() {
               </p>
             </div>
             <div className="flex justify-between mt-4 text-xl">
-              <p>Ưu đãi voucher / thành viên</p>
+              <p>Ưu đãi voucher / thành viên123</p>
               <p>-0</p>
             </div>
             <div className="flex justify-between mt-4 text-xl">
