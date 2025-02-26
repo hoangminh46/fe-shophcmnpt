@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 import { addProduct } from "@/services/appService";
-import { fetchCart } from "@/lib/features/authSlice";
 import { NumericFormat } from "react-number-format";
 
 export default function ProductDetail() {
@@ -55,7 +54,6 @@ export default function ProductDetail() {
     };
     if (size && user) {
       addProduct(data);
-      dispatch(fetchCart(user?.id));
       toast.success(`Thêm sản phẩm ${product?.name} x${quantity}`);
     } else {
       toast.warning("Bạn chưa chọn size");

@@ -23,7 +23,7 @@ export default function Home() {
   useEffect(() => {
     if (!userToken) {
       dispatch(logout());
-      router.push("/auth");
+      // router.push("/auth");
     }
   }, [userToken]);
 

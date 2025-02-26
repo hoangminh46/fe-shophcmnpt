@@ -11,9 +11,9 @@ export default function LoadingIcon() {
         <circle
           stroke-linecap="round"
           fill="none"
-          stroke-dasharray="32.98672286269283 32.98672286269283"
+          strokeDasharray="32.98672286269283 32.98672286269283"
           stroke="#FFFFFF"
-          stroke-width="8"
+          strokeWidth="8"
           r="21"
           cy="50"
           cx="50"

@@ -4,12 +4,7 @@ import ChangePassForm from "@/components/core/ChangePassForm";
 import ProfileForm from "@/components/core/ProfileForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { fetchCity } from "@/lib/features/appSlice";
-import {
-  fetchCart,
-  fetchOrder,
-  fetchUser,
-  logout,
-} from "@/lib/features/authSlice";
+import { fetchUser, logout } from "@/lib/features/authSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -19,34 +14,22 @@ import { NumericFormat } from "react-number-format";
 export default function Profile() {
   const user = useAppSelector((state) => state.auth.user);
   const orders = useAppSelector((state) => state.auth.order);
-  const userToken = useAppSelector((state) => state.auth.userToken);
   const cityList = useAppSelector((state) => state.app.cityData);
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   useEffect(() => {
     dispatch(fetchCity());
-    dispatch(fetchUser());
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      dispatch(fetchCart(user?.id));
-      dispatch(fetchOrder(user?.id));
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (!userToken) {
-      dispatch(logout());
-      router.push("/auth");
-    }
-  }, [userToken]);
+    dispatch(fetchUser()).then((data) => {
+      if (data) {
+        localStorage.setItem("user", data?.payload?.user);
+      }
+    });
+  }, [dispatch]);
 
   function handleLogout() {
-    localStorage.removeItem("token");
     dispatch(logout());
-    router.push("/auth");
+    // router.push("/auth");
   }
 
   function handleGetAddress(

@@ -58,7 +58,6 @@ export default function RegisterForm({ onSwitchTab }: RegisterFormProps) {
     if (registerUser.fulfilled.match(resultAction)) {
       const { message, token } = resultAction.payload;
       toast.success(message);
-      localStorage.setItem("token", token);
       router.push("/profile");
     } else if (registerUser.rejected.match(resultAction)) {
       const message: any = resultAction.payload;

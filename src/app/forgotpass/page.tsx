@@ -53,7 +53,7 @@ export default function ForgotPass() {
   }
 
   function handleNavigate() {
-    router.push("/auth");
+    // router.push("/auth");
   }
 
   return (

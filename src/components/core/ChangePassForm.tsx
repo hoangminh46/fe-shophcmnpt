@@ -48,7 +48,6 @@ export default function ChangePassForm() {
       const message: any = resultAction.payload.message;
       toast.success(message);
       route.push("/auth");
-      localStorage.removeItem("token");
     } else if (changePassword.rejected.match(resultAction)) {
       const message: any = resultAction.payload;
       toast.error(message);

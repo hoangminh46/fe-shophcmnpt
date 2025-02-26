@@ -1,4 +1,4 @@
-import { getCartByUserId, getOrderByUserId } from "@/services/appService";
+import { getOrderByUserId } from "@/services/appService";
 import {
   changePass,
   deleteProduct,
@@ -127,20 +127,6 @@ export const changePassword = createAsyncThunk(
   }
 );
 
-export const fetchCart = createAsyncThunk(
-  "auth/fetchCart",
-  async (id: string, { rejectWithValue }) => {
-    try {
-      const data = await getCartByUserId(id);
-      return data;
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "Thao tác thất bại"
-      );
-    }
-  }
-);
-
 export const deleteProductFormCart = createAsyncThunk(
   "auth/deleteProductFormCart",
   async (infoDelete: any, { rejectWithValue }) => {
@@ -243,15 +229,11 @@ export const authSlice = createSlice({
         toast.success(action.payload.message);
         state.message = action.payload.message;
         state.userToken = action.payload.token;
-        localStorage.setItem("token", action.payload.token);
       })
       .addCase(changePassword.fulfilled, (state, action) => {
         state.isAuthenticated = false;
         state.user = null;
         state.userToken = null;
-      })
-      .addCase(fetchCart.fulfilled, (state, action) => {
-        state.cart = action.payload;
       })
       .addCase(deleteProductFormCart.fulfilled, (state, action) => {
         state.cart = action.payload;

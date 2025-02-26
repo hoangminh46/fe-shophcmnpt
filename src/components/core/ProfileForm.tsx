@@ -112,9 +112,9 @@ export default function ProfileForm() {
     }
   }, [user]);
 
-  useEffect(() => {
-    dispatch(fetchUser());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchUser());
+  // }, []);
 
   async function onSubmit(values: z.infer<typeof profileSchema>) {
     const citySelected = citis.Name;

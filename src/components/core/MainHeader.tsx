@@ -12,7 +12,7 @@ import SearchIcon from "@/icons/SearchIcon";
 import UserIcon from "@/icons/UserIcon";
 import CartIcon from "@/icons/CartIcon";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { fetchCart, fetchUser, logout } from "@/lib/features/authSlice";
+import { fetchUser, logout } from "@/lib/features/authSlice";
 import { useRouter } from "next/navigation";
 import Cart from "@/components/core/Cart";
 import { toggleCart, toggleSearch } from "@/lib/features/appSlice";
@@ -27,21 +27,14 @@ export default function MainHeader() {
   const dispatch = useAppDispatch();
 
   function handleLogout() {
-    localStorage.removeItem("token");
     dispatch(logout());
     dispatch(toggleCart(false));
-    router.push("/auth");
+    // router.push("/auth");
   }
 
-  useEffect(() => {
-    dispatch(fetchUser());
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      dispatch(fetchCart(user?.id));
-    }
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchUser());
+  // }, []);
 
   return (
     <header className="border-b-1 h-4.5 fixed top-0 left-0 right-0 z-50 bg-white mb-[71px] w-full max-w-full">

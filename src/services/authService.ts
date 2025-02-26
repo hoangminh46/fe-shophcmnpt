@@ -3,10 +3,16 @@ import axiosInstance from "@/axiosConfig";
 
 export const login = async (email: string, password: string) => {
   try {
-    const response = await axiosInstance.post("/login", {
-      email,
-      password,
-    });
+    const response = await axiosInstance.post(
+      "/api/auth/login",
+      {
+        email,
+        password,
+      },
+      {
+        withCredentials: true,
+      }
+    );
     return response.data;
   } catch (error) {
     throw error;
@@ -44,16 +50,11 @@ export const resetPass = async (email: string) => {
 };
 
 export const getUser = async () => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    try {
-      const response = await axiosInstance.get("/users", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      return response.data;
-    } catch (error) {
-      localStorage.removeItem("token");
-    }
+  try {
+    const response = await axiosInstance.get("/api/users");
+    return response.data;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -67,20 +68,13 @@ export const updateUser = async (user: any) => {
 };
 
 export const changePass = async (data: any) => {
-  const token = localStorage.getItem("token");
-  if (token) {
+  if (data) {
     try {
-      const response = await axiosInstance.put(
-        "/change-password",
-        {
-          currentPassword: data.currentPassword,
-          newPassword: data.newPassword,
-          renewPassword: data.renewPassword,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await axiosInstance.put("/change-password", {
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
+        renewPassword: data.renewPassword,
+      });
       return response.data;
     } catch (error) {
       throw error;
