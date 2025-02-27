@@ -67,6 +67,13 @@ export const appSlice = createSlice({
     toggleSearch: (state) => {
       state.toggleSearch = !state.toggleSearch;
     },
+    resetAppState: (state) => {
+      state.cityData = null;
+      state.toggleCart = false;
+      state.toggleSearch = false;
+      state.products = [];
+      state.product = null;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCity.fulfilled, (state, action) => {
@@ -81,5 +88,5 @@ export const appSlice = createSlice({
   },
 });
 
-export const { toggleCart, toggleSearch } = appSlice.actions;
+export const { toggleCart, toggleSearch, resetAppState } = appSlice.actions;
 export default appSlice.reducer;

@@ -5,7 +5,7 @@ import ProductBanner from "@/components/core/ProductBanner";
 import ProductItem from "@/components/core/ProductItem";
 import PromotionBanner from "@/components/core/PromotionBanner";
 import { fetchProducts } from "@/lib/features/appSlice";
-import { logout } from "@/lib/features/authSlice";
+import { fetchUser} from "@/lib/features/authSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -20,12 +20,11 @@ export default function Home() {
     dispatch(fetchProducts());
   }, []);
 
-  useEffect(() => {
-    if (!userToken) {
-      dispatch(logout());
-      // router.push("/auth");
-    }
-  }, [userToken]);
+  // useEffect(() => {
+  //   if (!userToken) {
+  //     dispatch(fetchUser());
+  //   }
+  // }, [userToken]);
 
   return (
     <MainLayout>

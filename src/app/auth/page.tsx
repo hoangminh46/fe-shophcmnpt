@@ -3,14 +3,28 @@ import AuthLayout from "@/app/layouts/AuthLayout";
 import LoginForm from "@/components/core/LoginForm";
 import RegisterForm from "@/components/core/RegisterForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from 'next/navigation';
+import { useDispatch } from 'react-redux';
 
 export default function Auth() {
   const [currentTab, setCurrentTab] = useState("login");
+  const searchParams = useSearchParams();
+  const dispatch = useDispatch();
 
   const handleTabChange = (value: string) => {
     setCurrentTab(value);
   };
+
+  useEffect(() => {
+    const sessionExpired = searchParams.get('sessionExpired');
+    
+    if (sessionExpired === 'true') {
+      localStorage.clear();
+      
+      dispatch({ type: 'RESET_STATE' });
+    }
+  }, [searchParams, dispatch]);
 
   return (
     <AuthLayout>

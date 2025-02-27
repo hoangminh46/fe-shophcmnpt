@@ -5,6 +5,7 @@ import {
   editQuantityProduct,
   getUser,
   login,
+  logout,
   register,
   resetPass,
   updateUser,
@@ -49,6 +50,20 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+export const logoutUser = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await logout();
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Đăng xuất thất bại"
+      );
+    }
+  }
+);
+
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (
@@ -57,11 +72,12 @@ export const registerUser = createAsyncThunk(
       email,
       password,
       fullName,
-    }: { id: string; email: string; password: string; fullName: string },
+      otp,
+    }: { id: string; email: string; password: string; fullName: string; otp: string },
     { rejectWithValue }
   ) => {
     try {
-      const data = await register(id, email, password, fullName);
+      const data = await register(id, email, password, fullName, otp);
       return data;
     } catch (error: any) {
       return rejectWithValue(
@@ -172,14 +188,7 @@ export const changeQuantityProduct = createAsyncThunk(
 export const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {
-    logout: (state) => {
-      state.userToken = null;
-      state.isAuthenticated = false;
-      state.user = null;
-      state.cart = null;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
@@ -195,6 +204,24 @@ export const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.message = action.payload as string;
+      })
+      .addCase(logoutUser.pending, (state) => {
+        state.loading = true;
+        state.message = null;
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.userToken = null;
+        state.isAuthenticated = false;
+        state.loading = false;
+        state.message = null;
+        state.user = null;
+        state.cart = null;
+        state.order = null;
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.loading = false;
+        state.message = action.payload as string;
+        toast.error(action.payload as string);
       })
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
@@ -247,5 +274,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+// export const {  } = authSlice.actions;
 export default authSlice.reducer;

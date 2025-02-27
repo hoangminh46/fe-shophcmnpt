@@ -1,20 +1,28 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+const protectedRoutes = [
+  "/profile",
+];
+
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
-
-  const isPublicPath = path === "/auth" || path === "/forgotpass";
-
   const token = request.cookies.get("accessToken")?.value || "";
+  const refreshToken = request.cookies.get("refreshToken")?.value || "";
 
-  if (isPublicPath && token) {
-    return NextResponse.redirect(new URL("/", request.url));
-  } else if (!isPublicPath && !token) {
-    return NextResponse.redirect(new URL("/auth", request.url));
+  const isProtectedRoute = protectedRoutes.some(route => 
+    path === route || path.startsWith(`${route}/`)
+  );
+
+  if (isProtectedRoute && !token && !refreshToken) {
+    const authUrl = new URL("/auth", request.url);
+    authUrl.searchParams.set("sessionExpired", "true");
+    return NextResponse.redirect(authUrl);
   }
 }
 
 export const config = {
-  matcher: ["/", "/login", "/signup", "/profile", "/verifyemail"],
+  matcher: [
+    "/profile/:path*",
+  ]
 };

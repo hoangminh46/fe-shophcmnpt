@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +20,7 @@ import { useAppDispatch } from "@/lib/hooks";
 import { registerUser } from "@/lib/features/authSlice";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import OTPModal from "@/components/core/OTPModal";
 
 const registerSchema = z.object({
   email: z
@@ -38,6 +40,9 @@ interface RegisterFormProps {
 export default function RegisterForm({ onSwitchTab }: RegisterFormProps) {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const [showOTPModal, setShowOTPModal] = useState(false);
+  const [pendingValues, setPendingValues] = useState<RegisterFormData | null>(null);
+  
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     mode: "onBlur",
@@ -49,85 +54,103 @@ export default function RegisterForm({ onSwitchTab }: RegisterFormProps) {
   });
 
   async function onSubmit(values: z.infer<typeof registerSchema>) {
+    setPendingValues(values);
+    setShowOTPModal(true);
+  }
+
+  const handleVerifyOTP = async (otp: string) => {
+    if (!pendingValues) return;
+
     const resultAction = await dispatch(
       registerUser({
         id: uuidv4(),
-        ...values,
+        ...pendingValues,
+        otp,
       })
     );
+
     if (registerUser.fulfilled.match(resultAction)) {
-      const { message, token } = resultAction.payload;
+      const { message } = resultAction.payload;
       toast.success(message);
+      setShowOTPModal(false);
       router.push("/profile");
     } else if (registerUser.rejected.match(resultAction)) {
       const message: any = resultAction.payload;
       toast.error(message);
     }
-  }
+  };
 
   return (
-    <Form {...form}>
-      <p className="text-sm mb-4">
-        Trở thành thành viên Authentic Shoes để nhận ưu đãi độc quyền và thanh
-        toán nhanh hơn
-      </p>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email đăng nhập</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="example@gmail.com"
-                  {...field}
-                  type="email"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="fullName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Họ và tên</FormLabel>
-              <FormControl>
-                <Input placeholder="Nguyễn Văn A" {...field} type="text" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mật khẩu</FormLabel>
-              <FormControl>
-                <Input placeholder="********" {...field} type="password" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" className="block w-full">
-          Đăng ký
-        </Button>
-        <div className="w-full text-sm text-center border-t p-4 font-medium">
-          Bạn đã có tài khoản?
-          <span
-            onClick={onSwitchTab}
-            className="ml-1 underline cursor-pointer font-semibold"
-          >
-            Đăng nhập ngay
-          </span>
-        </div>
-      </form>
-    </Form>
+    <>
+      <Form {...form}>
+        <p className="text-sm mb-4">
+          Trở thành thành viên Authentic Shoes để nhận ưu đãi độc quyền và thanh
+          toán nhanh hơn
+        </p>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email đăng nhập</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="example@gmail.com"
+                    {...field}
+                    type="email"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="fullName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Họ và tên</FormLabel>
+                <FormControl>
+                  <Input placeholder="Nguyễn Văn A" {...field} type="text" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mật khẩu</FormLabel>
+                <FormControl>
+                  <Input placeholder="********" {...field} type="password" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit" className="block w-full">
+            Đăng ký
+          </Button>
+          <div className="w-full text-sm text-center border-t p-4 font-medium">
+            Bạn đã có tài khoản?
+            <span
+              onClick={onSwitchTab}
+              className="ml-1 underline cursor-pointer font-semibold"
+            >
+              Đăng nhập ngay
+            </span>
+          </div>
+        </form>
+      </Form>
+      
+      <OTPModal
+        isOpen={showOTPModal}
+        onClose={() => setShowOTPModal(false)}
+        onVerify={handleVerifyOTP}
+      />
+    </>
   );
 }

@@ -50,9 +50,8 @@ export default function LoginForm({ onSwitchTab }: LoginFormProps) {
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     const resultAction = await dispatch(loginUser(values));
     if (loginUser.fulfilled.match(resultAction)) {
-      const { message, accessToken } = resultAction.payload;
+      const { message } = resultAction.payload;
       toast.success(message);
-      localStorage.setItem("accessToken", accessToken);
       router.push("/profile");
     } else if (loginUser.rejected.match(resultAction)) {
       const message: any = resultAction.payload;

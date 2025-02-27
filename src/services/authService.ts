@@ -19,11 +19,22 @@ export const login = async (email: string, password: string) => {
   }
 };
 
+export const logout = async (): Promise<void> => {
+  try {
+    await axiosInstance.post('/api/auth/logout');
+    localStorage.removeItem('user');
+  } catch (error) {
+    console.error('Lỗi khi đăng xuất:', error);
+    throw error;
+  }
+};
+
 export const register = async (
   id: string,
   email: string,
   password: string,
-  fullName: string
+  fullName: string,
+  otp: string
 ) => {
   try {
     const response = await axiosInstance.post("/users", {
@@ -31,6 +42,7 @@ export const register = async (
       email,
       password,
       fullName,
+      otp,
     });
     return response.data;
   } catch (error) {

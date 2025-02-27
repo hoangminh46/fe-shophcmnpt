@@ -12,7 +12,7 @@ import SearchIcon from "@/icons/SearchIcon";
 import UserIcon from "@/icons/UserIcon";
 import CartIcon from "@/icons/CartIcon";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { fetchUser, logout } from "@/lib/features/authSlice";
+import { fetchUser, logoutUser } from "@/lib/features/authSlice";
 import { useRouter } from "next/navigation";
 import Cart from "@/components/core/Cart";
 import { toggleCart, toggleSearch } from "@/lib/features/appSlice";
@@ -27,9 +27,9 @@ export default function MainHeader() {
   const dispatch = useAppDispatch();
 
   function handleLogout() {
-    dispatch(logout());
-    dispatch(toggleCart(false));
-    // router.push("/auth");
+    dispatch(logoutUser()).then(() => {
+      router.push('/auth');
+    });
   }
 
   // useEffect(() => {
