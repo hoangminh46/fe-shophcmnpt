@@ -1,6 +1,7 @@
 // api/userApi.ts
 import axiosInstance from "@/axiosConfig";
 
+//Api đăng nhập/ đăng xuất
 export const login = async (email: string, password: string) => {
   try {
     const response = await axiosInstance.post(
@@ -29,20 +30,17 @@ export const logout = async (): Promise<void> => {
   }
 };
 
+//Api đăng ký
 export const register = async (
-  id: string,
   email: string,
   password: string,
   fullName: string,
-  otp: string
 ) => {
   try {
-    const response = await axiosInstance.post("/users", {
-      id,
+    const response = await axiosInstance.post("/api/auth/register", {
       email,
       password,
-      fullName,
-      otp,
+      fullName
     });
     return response.data;
   } catch (error) {
@@ -50,9 +48,25 @@ export const register = async (
   }
 };
 
-export const resetPass = async (email: string) => {
+export const verifyRegister = async (
+  email: string,
+  otp: string,
+) => {
   try {
-    const response = await axiosInstance.post("/reset-password", {
+    const response = await axiosInstance.post("/api/auth/verify-register", {
+      email,
+      otp
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//Api quên mật khẩu
+export const sendResetCode = async (email: string) => {
+  try {
+    const response = await axiosInstance.post("/api/auth/send-reset-code", {
       email,
     });
     return response.data;
@@ -60,6 +74,31 @@ export const resetPass = async (email: string) => {
     throw error;
   }
 };
+
+export const verifyResetCode = async (email: string, otp: string) => {
+  try {
+    const response = await axiosInstance.post("/api/auth/verify-reset-code", {
+      email,
+      otp
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const sendResetPassword = async (email: string, newPassword: string) => {
+  try {
+    const response = await axiosInstance.post("/api/auth/reset-password", {
+      email,
+      newPassword,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 
 export const getUser = async () => {
   try {

@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -17,9 +16,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAppDispatch } from "@/lib/hooks";
-import { registerUser } from "@/lib/features/authSlice";
+import { registerUser, verifyUserOTP } from "@/lib/features/authSlice";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import OTPModal from "@/components/core/OTPModal";
 
 const registerSchema = z.object({
@@ -39,10 +37,11 @@ interface RegisterFormProps {
 
 export default function RegisterForm({ onSwitchTab }: RegisterFormProps) {
   const dispatch = useAppDispatch();
-  const router = useRouter();
   const [showOTPModal, setShowOTPModal] = useState(false);
-  const [pendingValues, setPendingValues] = useState<RegisterFormData | null>(null);
-  
+  const [pendingValues, setPendingValues] = useState<RegisterFormData | null>(
+    null
+  );
+
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     mode: "onBlur",
@@ -54,29 +53,32 @@ export default function RegisterForm({ onSwitchTab }: RegisterFormProps) {
   });
 
   async function onSubmit(values: z.infer<typeof registerSchema>) {
-    setPendingValues(values);
-    setShowOTPModal(true);
-  }
-
-  const handleVerifyOTP = async (otp: string) => {
-    if (!pendingValues) return;
-
-    const resultAction = await dispatch(
-      registerUser({
-        id: uuidv4(),
-        ...pendingValues,
-        otp,
-      })
-    );
-
+    const resultAction = await dispatch(registerUser(values));
     if (registerUser.fulfilled.match(resultAction)) {
       const { message } = resultAction.payload;
       toast.success(message);
-      setShowOTPModal(false);
-      router.push("/profile");
+      setPendingValues(values);
+      setShowOTPModal(true);
     } else if (registerUser.rejected.match(resultAction)) {
       const message: any = resultAction.payload;
       toast.error(message);
+    }
+  }
+
+  const handleVerifyOTP = async (otp: string) => {
+    if (pendingValues) {
+      const resultAction = await dispatch(
+        verifyUserOTP({ email: pendingValues?.email, otp })
+      );
+      if (verifyUserOTP.fulfilled.match(resultAction)) {
+        const { message } = resultAction.payload;
+        toast.success(message);
+        setShowOTPModal(false);
+        onSwitchTab();
+      } else if (verifyUserOTP.rejected.match(resultAction)) {
+        const message: any = resultAction.payload;
+        toast.error(message);
+      }
     }
   };
 
@@ -145,7 +147,7 @@ export default function RegisterForm({ onSwitchTab }: RegisterFormProps) {
           </div>
         </form>
       </Form>
-      
+
       <OTPModal
         isOpen={showOTPModal}
         onClose={() => setShowOTPModal(false)}

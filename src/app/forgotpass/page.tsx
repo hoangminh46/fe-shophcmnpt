@@ -16,9 +16,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { resetPassword } from "@/lib/features/authSlice";
+import {
+  handleResetCode,
+  handleVerifyResetCode,
+} from "@/lib/features/authSlice";
 import { toast } from "sonner";
 import LoadingIcon from "@/icons/LoadingIcon";
+import OTPModal from "@/components/core/OTPModal";
+import { useState } from "react";
+import ResetPassForm from "@/components/core/ResetPassForm";
 
 const forgotSchema = z.object({
   email: z
@@ -32,6 +38,11 @@ type ForgotFormData = z.infer<typeof forgotSchema>;
 export default function ForgotPass() {
   const dispatch = useAppDispatch();
   const loadingState = useAppSelector((state) => state.auth.loading);
+  const [showOTPModal, setShowOTPModal] = useState(false);
+  const [showResetPassForm, setShowResetPassForm] = useState(false);
+  const [pendingValues, setPendingValues] = useState<ForgotFormData | null>(
+    null
+  );
   const router = useRouter();
   const form = useForm<ForgotFormData>({
     resolver: zodResolver(forgotSchema),
@@ -42,18 +53,37 @@ export default function ForgotPass() {
   });
 
   async function onSubmit(values: z.infer<typeof forgotSchema>) {
-    const resultAction = await dispatch(resetPassword(values));
-    if (resetPassword.fulfilled.match(resultAction)) {
+    const resultAction = await dispatch(handleResetCode(values));
+    if (handleResetCode.fulfilled.match(resultAction)) {
       const message: any = resultAction.payload.message;
+      setPendingValues(values);
+      setShowOTPModal(true);
       toast.success(message);
-    } else if (resetPassword.rejected.match(resultAction)) {
+    } else if (handleResetCode.rejected.match(resultAction)) {
       const message: any = resultAction.payload;
       toast.error(message);
     }
   }
 
+  const handleVerifyOTP = async (otp: string) => {
+    if (pendingValues) {
+      const resultAction = await dispatch(
+        handleVerifyResetCode({ email: pendingValues?.email, otp })
+      );
+      if (handleVerifyResetCode.fulfilled.match(resultAction)) {
+        const { message } = resultAction.payload;
+        toast.success(message);
+        setShowOTPModal(false);
+        setShowResetPassForm(true);
+      } else if (handleVerifyResetCode.rejected.match(resultAction)) {
+        const message: any = resultAction.payload;
+        toast.error(message);
+      }
+    }
+  };
+
   function handleNavigate() {
-    // router.push("/auth");
+    router.push("/auth");
   }
 
   return (
@@ -62,8 +92,7 @@ export default function ForgotPass() {
         <div className="w-[464px] mx-auto mt-8">
           <p className="font-semibold text-lg mb-4">Quên mật khẩu</p>
           <p className="text-sm mb-6">
-            Vui lòng nhập số điện thoại hoặc email đã đăng ký tài khoản để lấy
-            lại mật khẩu
+            Vui lòng nhập email đã đăng ký tài khoản để lấy lại mật khẩu
           </p>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -91,7 +120,7 @@ export default function ForgotPass() {
                     Đang xử lý...
                   </p>
                 ) : (
-                  <p>Gửi lại mật khẩu</p>
+                  <p>Lấy lại mật khẩu</p>
                 )}
               </Button>
             </form>
@@ -105,6 +134,15 @@ export default function ForgotPass() {
           </Button>
         </div>
       </div>
+      <OTPModal
+        isOpen={showOTPModal}
+        onClose={() => setShowOTPModal(false)}
+        onVerify={handleVerifyOTP}
+      />
+      <ResetPassForm
+        isOpen={showResetPassForm}
+        onClose={() => setShowResetPassForm(false)}
+      />
     </MainLayout>
   );
 }

@@ -21,9 +21,9 @@ import { useEffect } from "react";
 
 export default function MainHeader() {
   const router = useRouter();
-  const userAuth = useAppSelector((state) => state.auth.isAuthenticated);
-  const user = useAppSelector((state) => state.auth.user);
-  const cart = useAppSelector((state) => state.auth.cart);
+  const userAuth = useAppSelector((state) => state?.auth?.isAuthenticated);
+  const user = useAppSelector((state) => state?.auth?.user);
+  const cart = useAppSelector((state) => state?.auth?.cart);
   const dispatch = useAppDispatch();
 
   function handleLogout() {

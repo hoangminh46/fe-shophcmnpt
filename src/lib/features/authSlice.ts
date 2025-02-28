@@ -7,8 +7,11 @@ import {
   login,
   logout,
   register,
-  resetPass,
   updateUser,
+  verifyRegister,
+  sendResetCode,
+  verifyResetCode,
+  sendResetPassword
 } from "@/services/authService";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "sonner";
@@ -68,16 +71,14 @@ export const registerUser = createAsyncThunk(
   "auth/register",
   async (
     {
-      id,
       email,
       password,
       fullName,
-      otp,
-    }: { id: string; email: string; password: string; fullName: string; otp: string },
+    }: { email: string; password: string; fullName: string},
     { rejectWithValue }
   ) => {
     try {
-      const data = await register(id, email, password, fullName, otp);
+      const data = await register(email, password, fullName);
       return data;
     } catch (error: any) {
       return rejectWithValue(
@@ -87,11 +88,59 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-export const resetPassword = createAsyncThunk(
-  "auth/reset",
+export const verifyUserOTP = createAsyncThunk(
+  "auth/verify-otp",
+  async (
+    {
+      email,
+      otp
+    }: { email: string; otp: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const data = await verifyRegister(email, otp);
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Đăng ký thất bại"
+      );
+    }
+  }
+);
+
+export const handleResetCode = createAsyncThunk(
+  "auth/reset-code",
   async ({ email }: { email: string }, { rejectWithValue }) => {
     try {
-      const data = await resetPass(email);
+      const data = await sendResetCode(email);
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Thao tác thất bại"
+      );
+    }
+  }
+);
+
+export const handleVerifyResetCode = createAsyncThunk(
+  "auth/verify-reset-code",
+  async ({ email, otp }: { email: string; otp: string }, { rejectWithValue }) => {
+    try {
+      const data = await verifyResetCode(email, otp);
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Thao tác thất bại"
+      );
+    }
+  }
+);
+
+export const handleResetPassword = createAsyncThunk(
+  "auth/reset-password",
+  async ({ email, newPassword }: { email: string; newPassword: string }, { rejectWithValue }) => {
+    try {
+      const data = await sendResetPassword(email, newPassword);
       return data;
     } catch (error: any) {
       return rejectWithValue(
@@ -234,18 +283,6 @@ export const authSlice = createSlice({
         state.isAuthenticated = true;
       })
       .addCase(registerUser.rejected, (state, action) => {
-        state.loading = false;
-        state.message = action.payload as string;
-      })
-      .addCase(resetPassword.pending, (state) => {
-        state.loading = true;
-        state.message = null;
-      })
-      .addCase(resetPassword.fulfilled, (state, action) => {
-        state.loading = false;
-        state.message = action.payload.message;
-      })
-      .addCase(resetPassword.rejected, (state, action) => {
         state.loading = false;
         state.message = action.payload as string;
       })
