@@ -1,28 +1,39 @@
-import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
-const protectedRoutes = [
-  "/profile",
-];
+// List of protected routes and authentication routes
+const protectedRoutes = ['/profile', '/checkout']
+const authRoutes = ['/auth', '/forgotpass']
 
 export function middleware(request: NextRequest) {
-  const path = request.nextUrl.pathname;
-  const token = request.cookies.get("accessToken")?.value || "";
   const refreshToken = request.cookies.get("refreshToken")?.value || "";
+  const { pathname } = request.nextUrl
 
-  const isProtectedRoute = protectedRoutes.some(route => 
-    path === route || path.startsWith(`${route}/`)
-  );
-
-  if (isProtectedRoute && !token && !refreshToken) {
-    const authUrl = new URL("/auth", request.url);
-    authUrl.searchParams.set("sessionExpired", "true");
-    return NextResponse.redirect(authUrl);
+  // Helper function handle dynamic route
+  const matchPath = (path: string) => {
+    if (!path.includes('(.*)')) {
+      return pathname.startsWith(path)
+    }
+    const regexPath = path.replace('(.*)', '.*')
+    return new RegExp(`^${regexPath}$`).test(pathname)
   }
+
+  // Redirect to signin if the user is not logged in and tries to access a protected route
+  if (!refreshToken && (protectedRoutes.some(route => matchPath(route)) || pathname === '/')) {
+    const response = NextResponse.redirect(new URL('/auth', request.url))
+    return response
+  }
+
+  // Redirect to home if the user is logged in and tries to access an authentication route
+  if (refreshToken && authRoutes.some(route => matchPath(route))) {
+    const response = NextResponse.redirect(new URL('/', request.url))
+    return response
+  }
+
+  return NextResponse.next()
 }
 
+// Configure the matcher to apply middleware only to the specified routes
 export const config = {
-  matcher: [
-    "/profile/:path*",
-  ]
-};
+  matcher: ['/profile', '/checkout', '/auth', '/forgotpass'],
+}
